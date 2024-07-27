@@ -1,24 +1,25 @@
-import { Array2D } from "./Matrix";
-
 interface MatrixRenderParams {
-  matrix: Array2D;
+  matrix: number[][];
 }
 
 function MatrixRender({matrix}: MatrixRenderParams) {
   return(
-    matrix.map((row, indexRow=1) => {
-      return(
-        <div key={indexRow}>
-          {row.map((item) => {
-            return(
-              <div>
-                {item}
-              </div>
-            );
-          })}
-        </div>
-      );
-    })
+    <div className="matrix">
+      {matrix.map((row, indexRow) => {
+          return(
+            <div className="matrix-row" key={indexRow}>
+              {row.map((item) => {
+                return(
+                  <div>
+                    {item}
+                  </div>
+                );
+              })}
+            </div>
+          );
+        })
+      }
+    </div>
   );
 }
 
