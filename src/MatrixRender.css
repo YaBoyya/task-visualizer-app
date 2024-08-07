@@ -1,0 +1,16 @@
+.matrix {
+    border: solid 1px white;
+    width: 30%;
+    /* text-align: center; */
+    margin: auto;
+}
+
+.matrix-row {
+    display: flex;
+    /* TODO center it pls */
+    /* align-content: ; */
+}
+
+.matrix-row div {
+    padding: 2px;
+}
