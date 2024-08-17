@@ -1,7 +1,7 @@
 import { useState } from "react";
 import './App.css'
 import InputTaskCount from "./InputTaskCount";
-import TaskGraph from './TaskGraph'
+import Matrix from './Matrix'
 import MC_DZZZ from './MC_DZZZ'
 
 
@@ -50,12 +50,21 @@ function App() {
         <InputTaskCount
           setTaskCount={setTaskCount} 
         />
+        
         Task count: {taskCount}
         <button onClick={() => MC_DZZZ(taskGraph, taskSpecification, n, m)}>
           Click me!
         </button>
-        <TaskGraph 
-          taskCount={taskCount}
+        <br/>
+        Task Graph:
+        <Matrix 
+          row={taskCount}
+          col={taskCount}
+        />
+        Task Specification:
+        <Matrix
+          row={taskCount}
+          col={3}
         />
       </div>
     </>
