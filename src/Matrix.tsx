@@ -16,8 +16,17 @@ function Matrix({row, col}: MatrixParams) {
   );
 
   useEffect(() => {
-    // TODO make it so that when it changes sizes it can keep it's values
-    setMatrix(Array.from({length: row}, () => Array(col).fill(0)));
+    // Copies old values to new array after changing dimensions
+    const arr = Array.from({length: row}, () => Array(col).fill(0))
+    arr.forEach((row, i) => {
+      row.forEach((_, j) => {
+        if (i in matrix && j in matrix[i]) {
+          arr[i][j] = matrix[i][j];
+        }
+      })
+    }) 
+    console.log(arr)
+    setMatrix(arr);
   }, [row, col])
 
   return(

@@ -24,7 +24,6 @@ function solveTaskPriority(pi: number, ai: number) {
   return pi*ai;
 }
 
-// TODO FIX all values are the same 
 function solveCriticalTaskTimes(startTask: number, taskGraph: number[][], taskSpecification: number[][]) {
   let criticalTaskTime = taskSpecification[startTask][0];
   let vals: number[] = [];
