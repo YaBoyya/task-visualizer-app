@@ -7,7 +7,7 @@ export interface InputTaskCountParams {
 function InputTaskCount({setTaskCount}: InputTaskCountParams){
   const checkValue = (num: number) => {
     if (isNaN(num) || num < 1) {
-      num = 1
+      return 1
     }
     return num;
   }
