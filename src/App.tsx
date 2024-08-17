@@ -1,5 +1,7 @@
+import { useState } from "react";
 import './App.css'
-import Matrix from './Matrix'
+import InputTaskCount from "./InputTaskCount";
+import TaskGraph from './TaskGraph'
 import MC_DZZZ from './MC_DZZZ'
 
 
@@ -40,14 +42,21 @@ const n = taskGraph.length; // task count
 const m = 3; // processor count
 
 function App() {
+  const [taskCount, setTaskCount] = useState(2)
+
   return (
     <>
       <div className='container'>
-        Hi hello
+        <InputTaskCount
+          setTaskCount={setTaskCount} 
+        />
+        Task count: {taskCount}
         <button onClick={() => MC_DZZZ(taskGraph, taskSpecification, n, m)}>
           Click me!
         </button>
-        <Matrix />
+        <TaskGraph 
+          taskCount={taskCount}
+        />
       </div>
     </>
   )
