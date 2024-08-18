@@ -1,4 +1,5 @@
 import React from "react";
+import './MatrixInput.css'
 
 export interface MatrixInputParams {
   matrix: number[][];
@@ -18,11 +19,11 @@ function MatrixInput({matrix, setMatrix}: MatrixInputParams) {
   }
 
   return(
-    <>
+    <div className="matrix-input">
       {/* TODO maybe make better separation between cells */}
       {matrix.map((row, indexRow) => {
         return(
-          <div key={indexRow}>
+          <div key={indexRow} className="matrix-input-row">
             {row.map((_, indexColumn) => {
               return(
                 <input
@@ -37,7 +38,7 @@ function MatrixInput({matrix, setMatrix}: MatrixInputParams) {
           </div>
         );
       })}
-    </>
+    </div>
   );
 }
 

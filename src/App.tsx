@@ -47,25 +47,31 @@ function App() {
   return (
     <>
       <div className='container'>
-        <InputTaskCount
-          setTaskCount={setTaskCount} 
-        />
-        
-        Task count: {taskCount}
-        <button onClick={() => MC_DZZZ(taskGraph, taskSpecification, n, m)}>
-          Click me!
-        </button>
-        <br/>
-        Task Graph:
-        <Matrix 
-          row={taskCount}
-          col={taskCount}
-        />
-        Task Specification:
-        <Matrix
-          row={taskCount}
-          col={3}
-        />
+        <div className="main-input">
+          <InputTaskCount
+            setTaskCount={setTaskCount} 
+          />
+          Task count: {taskCount}
+          <button onClick={() => MC_DZZZ(taskGraph, taskSpecification, n, m)}>
+            Click me!
+          </button>
+        </div>
+        <div className="matrix-inputs">
+          <div className="graph">
+            <h4>Task Graph</h4>
+            <Matrix 
+              row={taskCount}
+              col={taskCount}
+            />
+          </div>
+          <div className="specification">
+            <h4>Task Specification</h4>
+            <Matrix
+              row={taskCount}
+              col={3}
+            />
+          </div>
+        </div>
       </div>
     </>
   )

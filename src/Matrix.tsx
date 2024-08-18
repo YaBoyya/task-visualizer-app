@@ -32,7 +32,7 @@ function Matrix({row, col}: MatrixParams) {
   return(
     <>
       <MatrixInput matrix={matrix} setMatrix={setMatrix} />
-      <MatrixRender matrix={matrix} />
+      {/* <MatrixRender matrix={matrix} /> */}
     </>
   );
 }
