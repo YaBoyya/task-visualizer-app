@@ -23,17 +23,18 @@ const taskGraph = [
 ]
 
 const taskSpecification = [
-// pi, ai, Di -> czas wykonania zadania, liczba żądanych procesorów, najpóźniejszy możliwy termin zakończenia zadania
-  [30, 3, 90], // 0
-  [10, 2, 20], // 1
-  [5, 1, 5],   // 2
-  [10, 3, 30], // 3
-  [15, 1, 15], // 4
-  [20, 1, 20], // 5
-  [25, 3, 75], // 6
+// czas wykonania zadania, liczba żądanych procesorów, najpóźniejszy możliwy termin zakończenia zadania 
+// pi, ai, Di
+  [30, 3, 195], // 0
+  [10, 2, 155], // 1
+  [5,  1, 30],   // 2
+  [10, 3, 80], // 3
+  [15, 1, 105], // 4
+  [20, 1, 110], // 5
+  [25, 3, 135], // 6
   [25, 1, 25], // 7
-  [10, 1, 10], // 8
-  [20, 2, 40], // 9
+  [10, 1, 50], // 8
+  [20, 2, 90], // 9
   [20, 3, 40], // 10
   [10, 2, 20], // 11
   [20, 3, 60]  // 12
@@ -43,7 +44,6 @@ const m = 3; // processor count
 
 function App() {
   const [taskCount, setTaskCount] = useState(2)
-
   return (
     <>
       <div className='container'>
