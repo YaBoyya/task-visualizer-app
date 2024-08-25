@@ -3,6 +3,7 @@ import './App.css'
 import InputTaskCount from "./InputTaskCount";
 import Matrix from './Matrix'
 import MC_DZZZ from './MC_DZZZ'
+import TimelineChart from "./TimelineChart";
 
 
 const taskGraph = [
@@ -46,6 +47,7 @@ function App() {
   const [taskCount, setTaskCount] = useState(2)
   return (
     <>
+      <TimelineChart/>
       <div className='container'>
         <div className="main-input">
           <InputTaskCount
