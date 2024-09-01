@@ -44,11 +44,13 @@ const n = taskGraph.length; // task count
 const m = 3; // processor count
 
 function App() {
-  const [taskCount, setTaskCount] = useState(2)
+  const [taskCount, setTaskCount] = useState(2);
   return (
     <>
-      <TimelineChart/>
       <div className='container'>
+        <div className="chart">
+          <TimelineChart/>
+        </div>
         <div className="main-input">
           <InputTaskCount
             setTaskCount={setTaskCount} 
