@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import { Chart } from 'react-google-charts'
 
-const layeredData = [
+type dataRow = [string, string, string, number, number]
+
+const layeredData: dataRow[][] = [
   [  
     ["P4", "T3", "Task3", 0, 15],
     ["P3", "T3", "Task3", 0, 15],
@@ -80,12 +82,11 @@ function TimelineChart() {
     { type: "number", id: "Start" },
     { type: "number", id: "End" },
   ]
-  const [data, setData] = useState([dataParams]);
+  const [data, setData] = useState<(typeof dataParams | dataRow[])[]>([dataParams]);
   const [step, setStep] = useState(layeredData.length);
 
   useEffect(() => {
-    // TODO fix issu with TS here
-    let newData = [dataParams];
+    let newData: (typeof dataParams  | dataRow[])[] = [dataParams];
     for (let i = 0; i < step; i++) {
       newData = newData.concat(layeredData[i]);
     }
