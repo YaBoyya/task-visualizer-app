@@ -49,7 +49,7 @@ function App() {
     <>
       <div className='container'>
         <div className="chart">
-          <TimelineChart/>
+          <TimelineChart />
         </div>
         <div className="main-input">
           <InputTaskCount

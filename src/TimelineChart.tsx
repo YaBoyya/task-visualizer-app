@@ -1,120 +1,206 @@
-import { useEffect, useState } from 'react';
-import { Chart } from 'react-google-charts'
+import ReactApexChart from "react-apexcharts";
 
-type dataRow = [string, string, string, number, number]
-
-const layeredData: dataRow[][] = [
-  [  
-    ["P4", "T3", "Task3", 0, 15],
-    ["P3", "T3", "Task3", 0, 15],
-    ["P2", "T2", "Task2", 0, 15],
-    ["P1", "T2", "Task2", 0, 15],
-    ["P0", "T2", "Task2", 0, 15],
-  ],
-  [
-    ["P4", "T0", "Task0", 15, 20],
-    ["P3", "T4", "Task4", 15, 20],
-    ["P2", "T2", "Task2", 15, 20],
-    ["P1", "T2", "Task2", 15, 20],
-    ["P0", "T2", "Task2", 15, 20],
-  ],
-  [
-    ["P4", "T0", "Task0", 20, 25],
-    ["P3", "T4", "Task4", 20, 25],
-    ["P2", "T6", "Task6", 20, 25],
-    ["P1", "T6", "Task6", 20, 25],
-    ["P0", "T6", "Task6", 20, 25],
-  ],
-  [
-    ["P4", "T5", "Task5", 25, 30],
-    ["P3", "T4", "Task4", 25, 30],
-    ["P2", "T6", "Task6", 25, 30],
-    ["P1", "T6", "Task6", 25, 30],
-    ["P0", "T6", "Task6", 25, 30],
-  ],
-  [
-    ["P4", "T8", "Task8", 30, 35],
-    ["P3", "T5", "Task5", 30, 35],
-    ["P2", "T6", "Task6", 30, 35],
-    ["P1", "T6", "Task6", 30, 35],
-    ["P0", "T6", "Task6", 30, 35],
-  ],
-  [  
-    ["P4", "T1", "Task1", 35, 40],
-    ["P3", "T1", "Task1", 35, 40],
-    ["P2", "T6", "Task6", 35, 40],
-    ["P1", "T6", "Task6", 35, 40],
-    ["P0", "T6", "Task6", 35, 40],
-  ],
-  [  
-    ["P3", "T8", "Task8", 40, 45],
-    ["P2", "T1", "Task1", 40, 45],
-    ["P1", "T1", "Task1", 40, 45],
-    ["P0", "T1", "Task1", 40, 45],
-  ],
-  [
-    ["P2", "T7", "Task7", 45, 50],
-    ["P1", "T7", "Task7", 45, 50],
-    ["P0", "T7", "Task7", 45, 50],
-  ]
+const series = [
+  {
+    name: 'Task0',
+    data: [
+      {
+        x: 'P4',
+        y: [15, 25]
+      },
+      {
+        x: 'P4',
+        y: [30, 35]
+      },
+    ]
+  },
+  {
+    name: 'Task1',
+    data: [
+      {
+        x: 'P4',
+        y: [35, 40]
+      },
+      {
+        x: 'P3',
+        y: [35, 40]
+      },
+      {
+        x: 'P2',
+        y: [40, 45]
+      },
+      {
+        x: 'P1',
+        y: [40, 45]
+      },      {
+        x: 'P0',
+        y: [40, 45]
+      },
+    ]
+  },
+  {
+    name: 'Task2',
+    data: [
+      {
+        x: 'P0',
+        y: [0, 20]
+      },
+      {
+        x: 'P1',
+        y: [0, 20]
+      },
+      {
+        x: 'P2',
+        y: [0, 20]
+      },
+    ]
+  },
+  {
+    name: 'Task3',
+    data: [
+      {
+        x: 'P4',
+        y: [0, 15]
+      },
+      {
+        x: 'P3',
+        y: [0, 15]
+      }
+    ]
+  },
+  {
+    name: 'Task4',
+    data: [
+      {
+        x: 'P3',
+        y: [15, 30]
+      },
+    ]
+  },
+  {
+    name: 'Task5',
+    data: [
+      {
+        x: 'P4',
+        y: [25, 30]
+      },
+      {
+        x: 'P3',
+        y: [30, 35]
+      },
+    ]
+  },
+  {
+    name: 'Task6',
+    data: [
+      {
+        x: 'P2',
+        y: [20, 40]
+      },
+      {
+        x: 'P1',
+        y: [20, 40]
+      },
+      {
+        x: 'P0',
+        y: [20, 40]
+      },
+    ]
+  },
+  {
+    name: 'Task7',
+    data: [
+      {
+        x: 'P2',
+        y: [45, 50]
+      },
+      {
+        x: 'P1',
+        y: [45, 50]
+      },
+      {
+        x: 'P0',
+        y: [45, 50]
+      },
+    ]
+  },
+  {
+    name: 'Task8',
+    data: [
+      {
+        x: 'P3',
+        y: [40, 45]
+      },
+    ]
+  },
 ]
 
+const options = {
+  chart: {
+    height: 350,
+    type: 'rangeBar'
+  },
+  plotOptions: {
+    bar: {
+      horizontal: true,
+      barHeight: '75%',
+      rangeBarGroupRows: true
+    }
+  },
+  colors: [
+    "#008FFB", "#00E396", "#FEB019", "#FF4560", "#775DD0",
+    "#3F51B5", "#546E7A", "#D4526E", "#8D5B4C", "#F86624",
+    "#D7263D", "#1B998B", "#2E294E", "#F46036", "#E2C044"
+  ],
+  fill: {
+    type: 'solid'
+  },
+  xaxis: {
+    type: 'category'
+  },
+  legend: {
+    position: 'right'
+  },
+}
 
-// TODO fix tick rate so that it works
-export const options = {
-  allowHtml: true,
-  height: 400,
-  hAxis: {
-    ticks: [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50],
-    viewWindow: {
-      min: 0,
-      max: 50
-    },
-    // format: ''
-  }
-};
 
 function TimelineChart() {
-  const dataParams = [
-    { type: "string", id: "President" },
-    { type: "string", id: "dummy bar label" },
-    { type: "string", role: "tooltip" },
-    { type: "number", id: "Start" },
-    { type: "number", id: "End" },
-  ]
-  const [data, setData] = useState<(typeof dataParams | dataRow[])[]>([dataParams]);
-  const [step, setStep] = useState(layeredData.length);
+  // TODO fix typing error with options
+  // TODO update steps
+  // const dataParams = [
+  //   { type: "string", id: "President" },
+  //   { type: "string", id: "dummy bar label" },
+  //   { type: "string", role: "tooltip" },
+  //   { type: "number", id: "Start" },
+  //   { type: "number", id: "End" },
+  // ]
+  // const [data, setData] = useState<(typeof dataParams | dataRow[])[]>([dataParams]);
+  // const [step, setStep] = useState(layeredData.length);
 
-  useEffect(() => {
-    let newData: (typeof dataParams  | dataRow[])[] = [dataParams];
-    for (let i = 0; i < step; i++) {
-      newData = newData.concat(layeredData[i]);
-    }
-    setData(newData);
-  }, [step]);
+  // useEffect(() => {
+  //   let newData: (typeof dataParams  | dataRow[])[] = [dataParams];
+  //   for (let i = 0; i < step; i++) {
+  //     newData = newData.concat(layeredData[i]);
+  //   }
+  //   setData(newData);
+  // }, [step]);
 
-  const handleStep = (subtrahend: number) => {
-    let diff = step + subtrahend;
-    if (diff <= 1) {
-      setStep(1);
-    } else if (diff >= layeredData.length){
-      setStep(layeredData.length);
-    } else {
-      setStep(diff);
-    }
-  }
+  // const handleStep = (subtrahend: number) => {
+  //   let diff = step + subtrahend;
+  //   if (diff <= 1) {
+  //     setStep(1);
+  //   } else if (diff >= layeredData.length){
+  //     setStep(layeredData.length);
+  //   } else {
+  //     setStep(diff);
+  //   }
+  // }
 
   return(
     <>
-      <button onClick={() => handleStep(-1)}>prev</button>
-      <button onClick={() => handleStep(1)}>next</button>
-      <Chart
-        chartType='Timeline'
-        width="100%"
-        height="100%"
-        data={data}
-        options={options}
-      />
+      {/* <button onClick={() => handleStep(-1)}>prev</button> */}
+      {/* <button onClick={() => handleStep(1)}>next</button> */}
+      <ReactApexChart options={options} series={series} type="rangeBar" height={350} />  
     </>
   );
 }
