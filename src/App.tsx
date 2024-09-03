@@ -1,9 +1,11 @@
 import { useState } from "react";
-import './App.css'
+// import './App.css'
 import InputTaskCount from "./InputTaskCount";
 import Matrix from './Matrix'
 import MC_DZZZ from './MC_DZZZ'
 import TimelineChart from "./TimelineChart";
+import BackgrounContainer from "./components/BackgroundContainer";
+import Navbar from "./components/Navbar";
 
 
 const taskGraph = [
@@ -42,14 +44,12 @@ const taskSpecification = [
 ];
 const n = taskGraph.length; // task count
 const m = 3; // processor count
-
+BackgrounContainer
 function App() {
   const [taskCount, setTaskCount] = useState(2);
   return (
-    <>
-      <h1 className="text-3xl font-bold underline">
-        Hello world!
-      </h1>
+    <BackgrounContainer>
+      <Navbar />
       <div className='container'>
         <div className="chart">
           <TimelineChart />
@@ -80,7 +80,7 @@ function App() {
           </div>
         </div>
       </div>
-    </>
+    </BackgrounContainer>
   )
 }
 
