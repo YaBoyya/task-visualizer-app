@@ -47,11 +47,13 @@ const n = taskGraph.length; // task count
 const m = 3; // processor count
 BackgrounContainer
 function App() {
-  const [taskCount, setTaskCount] = useState(2);
+  const [taskCount, setTaskCount] = useState<number>(2);
+  const [isSidebarOpen, setIsSidebarOpen] = useState<Boolean>(true);
+
   return (
     <BackgrounContainer>
       <Navbar />
-      <Sidebar>
+      <Sidebar isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen}>
         <div className='container'>
           <div className="main-input">
             <InputTaskCount
@@ -81,7 +83,7 @@ function App() {
         </div>
       </Sidebar>
 
-      <div className="z-0">
+      <div className={`z-0 transition-filter ease-in-out delay-300 ${isSidebarOpen ? "blur-sm pointer-events-none" : ""}`}>
         <TimelineChart />
       </div>
     </BackgrounContainer>
