@@ -24,7 +24,7 @@ function Sidebar({isSidebarOpen, setIsSidebarOpen, children}: SidebarProps) {
             {isSidebarOpen ? "<" : ">"}
           </button>
         </span> 
-        <aside className={`w-[100%] bg-slate-300 transition-transform ease-in-out delay-300 ${isSidebarOpen ? "" : "-translate-x-full"}`}>
+        <aside className={`font-semibold w-[100%] bg-slate-300 transition-transform ease-in-out delay-300 ${isSidebarOpen ? "" : "-translate-x-full"}`}>
           <h1 className="text-white text-3xl text-center p-2">Visualizer Configuration </h1>
           {children}
         </aside>

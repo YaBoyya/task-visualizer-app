@@ -7,6 +7,7 @@ import TimelineChart from "./TimelineChart";
 import BackgrounContainer from "./components/BackgroundContainer";
 import Navbar from "./components/Navbar";
 import Sidebar from "./components/Sidebar";
+import MatrixContainer from "./components/MatrixContainer";
 
 
 const taskGraph = [
@@ -59,27 +60,30 @@ function App() {
       </Navbar>
       <Sidebar isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen}>
         <div className='container'>
-          <div className="main-input">
+          <div className="text-center p-2">
             <InputTaskCount
               setTaskCount={setTaskCount} 
             />
-            Task count: {taskCount}
           </div>
-          <div className="matrix-inputs">
-            <div className="graph">
-              <h4>Task Graph</h4>
-              <Matrix 
-                row={taskCount}
-                col={taskCount}
-              />
+          <div className="flex w-full h-full place-content-around text-center">
+            <div>
+              <MatrixContainer
+                label={"Task Graph"}
+              >
+                <Matrix 
+                  row={taskCount}
+                  col={taskCount}
+                />
+              </MatrixContainer>
             </div>
-            <div className="specification">
-              <h4>Task Specification</h4>
+            <MatrixContainer
+              label={"Task Specification"}
+            >
               <Matrix
                 row={taskCount}
                 col={3}
               />
-            </div>
+            </MatrixContainer>
           </div>
         </div>
       </Sidebar>
