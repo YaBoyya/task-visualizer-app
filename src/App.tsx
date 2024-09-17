@@ -52,7 +52,11 @@ function App() {
 
   return (
     <BackgrounContainer>
-      <Navbar />
+      <Navbar>
+        <button onClick={() => MC_DZZZ(taskGraph, taskSpecification, n, m)}>
+          Hardcoded Algo!
+        </button>
+      </Navbar>
       <Sidebar isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen}>
         <div className='container'>
           <div className="main-input">
@@ -60,9 +64,6 @@ function App() {
               setTaskCount={setTaskCount} 
             />
             Task count: {taskCount}
-            <button onClick={() => MC_DZZZ(taskGraph, taskSpecification, n, m)}>
-              Click me!
-            </button>
           </div>
           <div className="matrix-inputs">
             <div className="graph">

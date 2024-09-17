@@ -25,7 +25,7 @@ function Matrix({row, col}: MatrixParams) {
         }
       })
     }) 
-    console.log(arr)
+
     setMatrix(arr);
   }, [row, col])
 
