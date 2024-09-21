@@ -8,6 +8,7 @@ import BackgrounContainer from "./components/BackgroundContainer";
 import Navbar from "./components/Navbar";
 import Sidebar from "./components/Sidebar";
 import MatrixContainer from "./components/MatrixContainer";
+import Button from "./components/Button";
 
 
 const taskGraph = [
@@ -46,7 +47,7 @@ const taskSpecification = [
 ];
 const n = taskGraph.length; // task count
 const m = 3; // processor count
-BackgrounContainer
+
 function App() {
   const [taskCount, setTaskCount] = useState<number>(2);
   const [isSidebarOpen, setIsSidebarOpen] = useState<Boolean>(true);
@@ -66,7 +67,7 @@ function App() {
             />
           </div>
           <div className="flex w-full h-full place-content-around text-center">
-            <div>
+            <div className="flex-grow">
               <MatrixContainer
                 label={"Task Graph"}
               >
@@ -88,7 +89,11 @@ function App() {
         </div>
       </Sidebar>
 
-      <div className={`z-0 transition-filter ease-in-out delay-300 ${isSidebarOpen ? "blur-sm pointer-events-none" : ""}`}>
+      <div className={`z-0 bg-white max-w-[60%] p-2 my-4 mx-auto transition-filter ease-in-out delay-300 ${isSidebarOpen ? "blur-sm pointer-events-none" : ""}`}>
+        <div className="flex place-content-between">
+          <Button>prev</Button>
+          <Button>next</Button>          
+        </div>
         <TimelineChart />
       </div>
     </BackgrounContainer>
