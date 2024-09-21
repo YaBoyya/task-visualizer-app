@@ -6,7 +6,6 @@ interface SidebarProps {
   children: React.ReactNode;
 }
 
-// TODO fix typing
 function Sidebar({isSidebarOpen, setIsSidebarOpen, children}: SidebarProps) {
   const toggleVisibility = () => setIsSidebarOpen((curr: Boolean) => !curr);
   useEffect(() => {
@@ -24,9 +23,14 @@ function Sidebar({isSidebarOpen, setIsSidebarOpen, children}: SidebarProps) {
             {isSidebarOpen ? "<" : ">"}
           </button>
         </span> 
-        <aside className={`font-semibold w-[100%] bg-slate-300 transition-transform ease-in-out delay-300 ${isSidebarOpen ? "" : "-translate-x-full"}`}>
-          <h1 className="text-white text-3xl text-center p-2">Visualizer Configuration </h1>
-          {children}
+        <aside className={`font-semibold w-[100%] h-full bg-slate-300 transition-transform ease-in-out delay-300 ${isSidebarOpen ? "" : "-translate-x-full"}`}>
+          <div className="flex flex-1">
+            <h1 className="flex-grow text-white text-center text-3xl p-2">Visualizer Configuration </h1>
+            <button className="p-2 m-2 bg-green-300">
+                Submit {"->"}
+            </button>
+          </div>
+          {children}            
         </aside>
       </div>
     </>
