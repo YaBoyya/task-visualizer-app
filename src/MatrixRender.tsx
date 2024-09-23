@@ -1,5 +1,3 @@
-// import './MatrixRender.css'
-
 interface MatrixRenderParams {
   matrix: number[][];
 }

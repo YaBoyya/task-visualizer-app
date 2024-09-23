@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import MatrixInput from "./MatrixInput";
-import MatrixRender from "./MatrixRender";
+import MatrixInput from "../MatrixInput";
+import MatrixRender from "../MatrixRender";
 
 export interface MatrixParams {
   row: number;

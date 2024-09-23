@@ -1,7 +1,6 @@
 import { useState } from "react";
-// import './App.css'
-import InputTaskCount from "./InputTaskCount";
-import Matrix from './Matrix'
+import InputTaskCount from "./components/InputTaskCount";
+import Matrix from './components/Matrix'
 import MC_DZZZ from './MC_DZZZ'
 import TimelineChart from "./TimelineChart";
 import BackgrounContainer from "./components/BackgroundContainer";
