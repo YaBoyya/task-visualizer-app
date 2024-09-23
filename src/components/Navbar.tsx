@@ -1,9 +1,9 @@
 function Navbar({children}: any){
   return (
-    <div className="container min-w-full border-b border-slate-600 border-solid text-slate-300">
+    <div className="container min-w-full bg-backgroundSecondary border-b border-secondary border-solid">
       <ul className="flex content-center p-5">
         <li className="font-bold text-xl mr-5">
-          task-visualizer-app
+          <h1>task-visualizer-app</h1>
         </li>
         <li className="text-xl mr-5">
           Home

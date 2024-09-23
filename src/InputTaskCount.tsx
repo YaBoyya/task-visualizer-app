@@ -1,5 +1,3 @@
-import React, { useState } from "react";
-
 export interface InputTaskCountParams {
   setTaskCount: React.Dispatch<React.SetStateAction<number>>;
 }
@@ -17,8 +15,8 @@ function InputTaskCount({setTaskCount}: InputTaskCountParams){
   }
 
   return (
-    <>
-      <label className="p-2 text-xl">Task count:</label>
+    <div>
+      <label className="text-xl p-2">Task count:</label>
       <input
         className="py-1 px-2 rounded-lg font-normal"
         type="number"
@@ -28,7 +26,7 @@ function InputTaskCount({setTaskCount}: InputTaskCountParams){
           setTaskCount(tasks);
         }}
       />
-    </>
+    </div>
   );
 }
 

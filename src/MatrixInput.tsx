@@ -26,7 +26,7 @@ function MatrixInput({matrix, setMatrix}: MatrixInputParams) {
             {row.map((_, indexColumn) => {
               return(
                 <input
-                  className="max-w-10 m-1"
+                  className="max-w-10 m-1 rounded-sm"
                   key={indexRow + " " + indexColumn}
                   type="text"
                   // defaultValue={0} //TODO rethink this 

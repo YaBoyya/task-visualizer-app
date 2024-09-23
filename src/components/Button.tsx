@@ -1,6 +1,6 @@
 function Button({children}: any) {
   return(
-    <button className="bg-indigo-600 px-4 py-2 rounded-xl">
+    <button className="bg-tertiary px-4 py-2 m-1 rounded-xl hover:bg-accent">
       {children}
     </button>
   );

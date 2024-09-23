@@ -1,10 +1,10 @@
 // TODO fix typing here
 function BackgrounContainer({ children }: any) {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-950 to-indigo-950">
+    <div className="min-h-screen bg-white text-[#4A4A4A]">
       {children}
     </div>
   );
 }
 
-export default BackgrounContainer
+export default BackgrounContainer;

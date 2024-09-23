@@ -1,4 +1,4 @@
-import './MatrixRender.css'
+// import './MatrixRender.css'
 
 interface MatrixRenderParams {
   matrix: number[][];

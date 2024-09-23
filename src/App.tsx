@@ -61,11 +61,9 @@ function App() {
       </Navbar>
       <Sidebar isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen}>
         <div className='container'>
-          <div className="text-center p-2">
-            <InputTaskCount
-              setTaskCount={setTaskCount} 
-            />
-          </div>
+          <InputTaskCount
+            setTaskCount={setTaskCount} 
+          />
           <div className="flex w-full h-full place-content-around text-center">
             <div className="flex-grow">
               <MatrixContainer
