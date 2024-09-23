@@ -18,11 +18,11 @@ function MatrixInput({matrix, setMatrix}: MatrixInputParams) {
   }
 
   return(
-    <div className="matrix-input">
+    <div className="flex flex-col ">
       {/* TODO maybe make better separation between cells */}
       {matrix.map((row, indexRow) => {
         return(
-          <div key={indexRow} className="font-normal">
+          <div key={indexRow} className="flex flex-row flex-nowrap place-content-center font-normal">
             {row.map((_, indexColumn) => {
               return(
                 <input

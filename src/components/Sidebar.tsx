@@ -12,7 +12,7 @@ function Sidebar({isSidebarOpen, setIsSidebarOpen, children}: SidebarProps) {
   useEffect(() => {
     setIsSidebarOpen(true)
   }, [])
-// TODO find a way to hide width change in root div, to see it increase aside dilay
+
   return (
     <>
       <div className={`flex ${isSidebarOpen ? "w-fit" : "w-0"} fixed h-screen z-10`}>
