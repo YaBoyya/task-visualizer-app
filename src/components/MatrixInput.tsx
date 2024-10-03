@@ -21,10 +21,10 @@ function MatrixInput({matrix, setMatrix}: MatrixInputProps) {
             {row.map((_, indexColumn) => {
               return(
                 <input
-                  className="max-w-10 m-1 rounded-sm"
+                  className="max-w-10 m-1 rounded-sm text-center"
                   key={indexRow + " " + indexColumn}
                   type="text"
-                  // defaultValue={0} //TODO rethink this 
+                  defaultValue={0}
                   name={indexRow + "," + indexColumn}
                   onChange={(e) => handleCellChange(e, indexRow, indexColumn)}
                 />
