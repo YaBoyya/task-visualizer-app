@@ -1,11 +1,6 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import Button from "./Button";
-
-interface SidebarProps {
-  isSidebarOpen: Boolean;
-  setIsSidebarOpen: React.Dispatch<React.SetStateAction<Boolean>>;
-  children: React.ReactNode;
-}
+import { SidebarProps } from "../props";
 
 function Sidebar({isSidebarOpen, setIsSidebarOpen, children}: SidebarProps) {
   const toggleVisibility = () => setIsSidebarOpen((curr: Boolean) => !curr);

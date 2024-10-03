@@ -1,13 +1,10 @@
 import { useEffect, useState } from "react";
 import MatrixInput from "./MatrixInput";
 import MatrixRender from "../MatrixRender";
+import { MatrixProps } from "../props";
 
-export interface MatrixParams {
-  row: number;
-  col: number;
-}
 
-function Matrix({row, col}: MatrixParams) {
+function Matrix({row, col}: MatrixProps) {
   const [matrix, setMatrix] = useState(
     Array.from(
       {length: row},

@@ -1,6 +1,8 @@
-function Navbar({children}: any){
+import { ChildrenProps } from "../props";
+
+function Navbar({children}: ChildrenProps){
   return (
-    <div className="container min-w-full bg-backgroundSecondary border-b border-secondary border-solid">
+    <div className="sticky container min-w-full bg-backgroundSecondary border-b border-secondary border-solid">
       <ul className="flex content-center p-5">
         <li className="font-bold text-xl mr-5">
           <h1>task-visualizer-app</h1>

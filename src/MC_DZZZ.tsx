@@ -1,10 +1,7 @@
-export interface EdgeParams {
-  start: number;
-  end: number;
-}
+import { EdgeProps } from "./props";
 
 function solveEdges(taskGraph: number[][]) {
-  let edges: EdgeParams[] = []; 
+  let edges: EdgeProps[] = []; 
 
   taskGraph.forEach((row, start) => {
       row.forEach((el, end) => {

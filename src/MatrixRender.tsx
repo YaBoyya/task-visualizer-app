@@ -1,8 +1,6 @@
-interface MatrixRenderParams {
-  matrix: number[][];
-}
+import { MatrixRenderProps } from "./props";
 
-function MatrixRender({matrix}: MatrixRenderParams) {
+function MatrixRender({matrix}: MatrixRenderProps) {
   return(
     <div className="matrix">
       {matrix.map((row, indexRow) => {

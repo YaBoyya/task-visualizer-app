@@ -1,11 +1,6 @@
-import React from "react";
+import { MatrixInputProps } from "../props";
 
-export interface MatrixInputParams {
-  matrix: number[][];
-  setMatrix: React.Dispatch<React.SetStateAction<number[][]>>;
-}
-
-function MatrixInput({matrix, setMatrix}: MatrixInputParams) {
+function MatrixInput({matrix, setMatrix}: MatrixInputProps) {
   const handleCellChange = (event: any, row: number, col: number) => {
     let val = event.target.value;
 

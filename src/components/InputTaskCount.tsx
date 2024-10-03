@@ -1,8 +1,6 @@
-export interface InputTaskCountParams {
-  setTaskCount: React.Dispatch<React.SetStateAction<number>>;
-}
+import { InputTaskCountProps } from "../props";
 
-function InputTaskCount({setTaskCount}: InputTaskCountParams){
+function InputTaskCount({setTaskCount}: InputTaskCountProps){
   // TODO add input error messages
   const checkValue = (num: number) => {
     if (isNaN(num) || num <= 1) {
