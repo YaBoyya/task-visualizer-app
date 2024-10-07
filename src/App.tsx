@@ -86,10 +86,10 @@ function App() {
         </div>
       </Sidebar>
 
-      <div className={`z-0 bg-white max-w-[60%] p-2 my-4 mx-auto transition-filter ease-in-out ${isSidebarOpen ? "blur-sm pointer-events-none" : ""}`}>
+      <div className={`z-0 bg-background max-w-[75%] h-screen p-2 mx-auto transition-filter ease-in-out ${isSidebarOpen ? "blur-sm pointer-events-none" : ""}`}>
         <div className="flex place-content-between">
-          <Button>prev</Button>
-          <Button>next</Button>          
+          <Button>{"<- prev step"}</Button>
+          <Button>{"next step ->"}</Button>          
         </div>
         <TimelineChart />
       </div>
