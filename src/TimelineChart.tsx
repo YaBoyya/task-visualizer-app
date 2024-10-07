@@ -138,7 +138,17 @@ const series = [
 const options = {
   chart: {
     height: 350,
-    type: 'rangeBar'
+    type: 'rangeBar',
+    toolbar: {
+      tools: {
+        selection: false,
+        zoom: false,
+        zoomin: false,
+        zoomout: false,
+        pan: false,
+        reset: false,
+      }
+    }
   },
   plotOptions: {
     bar: {
@@ -162,7 +172,6 @@ const options = {
     position: 'right'
   },
 }
-
 
 function TimelineChart() {
   // TODO fix typing error with options
