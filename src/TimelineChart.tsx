@@ -1,4 +1,5 @@
 import ReactApexChart from "react-apexcharts";
+import { ApexOptions } from "apexcharts";
 
 const series = [
   {
@@ -135,7 +136,7 @@ const series = [
   },
 ]
 
-const options = {
+const options: ApexOptions = {
   chart: {
     height: 350,
     type: 'rangeBar',
@@ -174,7 +175,6 @@ const options = {
 }
 
 function TimelineChart() {
-  // TODO fix typing error with options
   // TODO update steps
   // const dataParams = [
   //   { type: "string", id: "President" },

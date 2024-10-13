@@ -4,9 +4,9 @@ function solveEdges(taskGraph: number[][]) {
   let edges: EdgeProps[] = []; 
 
   taskGraph.forEach((row, start) => {
-      row.forEach((el, end) => {
+    row.forEach((el, end) => {
       if (el == 1) {
-        let edge: EdgeParams = {
+        let edge: EdgeProps = {
           'start': start,
           'end': end
         } 
