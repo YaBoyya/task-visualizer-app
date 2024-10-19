@@ -16,7 +16,13 @@ export interface SidebarProps {
 }
 
 export interface InputTaskCountProps {
+  taskCount: number
   setTaskCount: React.Dispatch<React.SetStateAction<number>>;
+}
+
+export interface InputChanceProps {
+  chance: number
+  setChance: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export interface MatrixRenderProps {

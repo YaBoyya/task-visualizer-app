@@ -1,28 +1,27 @@
 import { InputTaskCountProps } from "../props";
 
-function InputTaskCount({setTaskCount}: InputTaskCountProps){
+function InputTaskCount({taskCount, setTaskCount}: InputTaskCountProps){
   // TODO add input error messages
-  const checkValue = (num: number) => {
+  const handletaskCountChange = (num: number) => {
     if (isNaN(num) || num <= 1) {
-      return 2;
+      setTaskCount(2);
+      return;
     }
     if (num > 12) {
-      return 12;
+      setTaskCount(12);
+      return;
     }
-    return num;
+    setTaskCount(num);
   }
 
   return (
-    <div>
+    <div className="flex flex-row content-center place-content-between max-w-[475px] py-2">
       <label className="text-xl p-2">Task count:</label>
       <input
-        className="py-1 px-2 rounded-lg font-normal"
+        className="w-[200px] py-1 px-2 rounded-lg font-normal"
         type="number"
-        defaultValue={2}
-        onChange={e => {
-          const tasks = checkValue(parseInt(e.target.value));
-          setTaskCount(tasks);
-        }}
+        defaultValue={taskCount}
+        onChange={e => handletaskCountChange(parseInt(e.target.value))}
       />
     </div>
   );

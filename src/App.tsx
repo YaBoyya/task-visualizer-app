@@ -8,6 +8,7 @@ import Navbar from "./components/Navbar";
 import Sidebar from "./components/Sidebar";
 import MatrixContainer from "./components/MatrixContainer";
 import Button from "./components/Button";
+import InputChance from "./components/InputChance";
 
 
 const taskGraph = [
@@ -50,6 +51,7 @@ const m = 3; // processor count
 function App() {
   const [taskCount, setTaskCount] = useState<number>(2);
   const [isSidebarOpen, setIsSidebarOpen] = useState<Boolean>(true);
+  const [chance, setChance] = useState<number>(0.5);
 
   return (
     <BackgrounContainer>
@@ -60,7 +62,12 @@ function App() {
       </Navbar>
       <Sidebar isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen}>
         <div className='container'>
+          <InputChance
+            chance={chance}
+            setChance={setChance}
+          />
           <InputTaskCount
+            taskCount={taskCount}
             setTaskCount={setTaskCount} 
           />
           <div className="flex w-full h-full place-content-around text-center">
