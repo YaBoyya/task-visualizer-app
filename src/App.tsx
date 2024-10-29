@@ -70,7 +70,7 @@ function App() {
             taskCount={taskCount}
             setTaskCount={setTaskCount} 
           />
-          <div className="flex w-full h-full place-content-around text-center">
+          <div className="flex w-full h-full place-content-between text-center">
             <div className="flex-grow">
               <MatrixContainer
                 label={"Task Graph"}
@@ -93,7 +93,7 @@ function App() {
         </div>
       </Sidebar>
 
-      <div className={`z-0 bg-background max-w-[75%] h-screen p-2 mx-auto transition-filter ease-in-out ${isSidebarOpen ? "blur-sm pointer-events-none" : ""}`}>
+      <div className={`z-0 max-w-[75%] h-screen p-2 mx-auto transition-filter ease-in-out ${isSidebarOpen ? "blur-sm pointer-events-none" : ""}`}>
         <div className="flex place-content-between">
           <Button>{"<- prev step"}</Button>
           <Button>{"next step ->"}</Button>          
