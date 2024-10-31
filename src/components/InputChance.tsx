@@ -1,6 +1,6 @@
-import { InputChanceProps } from "../props";
+import { InputProps } from "../props";
 
-function InputChance({chance, setChance}: InputChanceProps) {
+function InputChance({value, setValue}: InputProps) {
   const checkChance = (val: number) => {
     return val;
   }
@@ -12,11 +12,8 @@ function InputChance({chance, setChance}: InputChanceProps) {
         className="w-[200px] py-1 px-2 rounded-lg font-normal"
         type="number"
         step="0.01"
-        defaultValue={chance}
-        onChange={e => {
-          const chance = checkChance(parseInt(e.target.value));
-          setChance(chance);
-        }}
+        defaultValue={value}
+        onChange={e => setValue(checkChance(parseInt(e.target.value)))}
       />
     </div>
   );

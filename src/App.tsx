@@ -9,6 +9,8 @@ import Sidebar from "./components/Sidebar";
 import MatrixContainer from "./components/MatrixContainer";
 import Button from "./components/Button";
 import InputChance from "./components/InputChance";
+import NOCImage from "./components/NOCImage";
+import InputProcessorCount from "./components/InputProcessorCount";
 
 
 const taskGraph = [
@@ -54,6 +56,7 @@ function App() {
   const [taskCount, setTaskCount] = useState<number>(2);
   const [isSidebarOpen, setIsSidebarOpen] = useState<Boolean>(true);
   const [chance, setChance] = useState<number>(0.5);
+  const [maxProcessors, setMaxProcessors] = useState<number>(0);
 
   const [graph, setGraph] = useState(
     Array.from(
@@ -94,12 +97,17 @@ function App() {
     setSpecification(arr);
   }
 
+  const onSubmitClick = () => {
+    // TODO invoke MC_DZZZ algorithm
+    setIsSidebarOpen(false);
+  }
+
   useEffect(() => {
     // Copies old values to new array after changing dimensions
     updateMatrixSize();
     updateSpecificatonSize();
   }, [taskCount])
-
+// TODO make inputs generic and make them better account for invalid values, aybe errors
   return (
     <BackgrounContainer>
       <Navbar>
@@ -107,15 +115,19 @@ function App() {
           Hardcoded Algo!
         </button>
       </Navbar>
-      <Sidebar isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen}>
+      <Sidebar isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} onSubmitClick={onSubmitClick}>
         <div className='container'>
           <InputChance
-            chance={chance}
-            setChance={setChance}
+            value={chance}
+            setValue={setChance}
           />
           <InputTaskCount
-            taskCount={taskCount}
-            setTaskCount={setTaskCount} 
+            value={taskCount}
+            setValue={setTaskCount} 
+          />
+          <InputProcessorCount 
+            value={maxProcessors}
+            setValue={setMaxProcessors}
           />
           <div className="flex w-full h-full place-content-between text-center">
             <div className="flex-grow">
@@ -146,6 +158,7 @@ function App() {
           <Button>{"next step ->"}</Button>          
         </div>
         <TimelineChart />
+        {maxProcessors ? <NOCImage num={maxProcessors}/> : null}
       </div>
     </BackgrounContainer>
   )

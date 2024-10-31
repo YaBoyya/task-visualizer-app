@@ -4,6 +4,11 @@ export interface ChildrenProps {
   children: React.ReactNode;
 }
 
+export interface ButtonProps {
+  children: React.ReactNode;
+  onClick?: () => void;
+}
+
 export interface MatrixContainerProps {
   label: String;
   children: React.ReactNode;
@@ -12,17 +17,13 @@ export interface MatrixContainerProps {
 export interface SidebarProps {
   isSidebarOpen: Boolean;
   setIsSidebarOpen: React.Dispatch<React.SetStateAction<Boolean>>;
+  onSubmitClick: () => void,
   children: React.ReactNode;
 }
 
-export interface InputTaskCountProps {
-  taskCount: number
-  setTaskCount: React.Dispatch<React.SetStateAction<number>>;
-}
-
-export interface InputChanceProps {
-  chance: number
-  setChance: React.Dispatch<React.SetStateAction<number>>;
+export interface InputProps {
+  value: number
+  setValue: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export interface MatrixRenderProps {

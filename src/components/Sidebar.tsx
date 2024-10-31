@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import Button from "./Button";
 import { SidebarProps } from "../props";
 
-function Sidebar({isSidebarOpen, setIsSidebarOpen, children}: SidebarProps) {
+function Sidebar({isSidebarOpen, setIsSidebarOpen, onSubmitClick, children}: SidebarProps) {
   const toggleVisibility = () => setIsSidebarOpen((curr: Boolean) => !curr);
   useEffect(() => {
     setIsSidebarOpen(true)
@@ -23,7 +23,7 @@ function Sidebar({isSidebarOpen, setIsSidebarOpen, children}: SidebarProps) {
         <aside className={`bg-backgroundSecondary font-semibold w-fit h-full px-4 py-2 transition-transform ease-in-out ${isSidebarOpen ? "" : "-translate-x-full"}`}>
           <div className="flex flex-1 items-center">
             <h1 className="flex-grow text-3xl p-2">Visualizer Configuration</h1>
-              <Button>
+              <Button onClick={onSubmitClick}>
                 Submit {"->"}
               </Button>
           </div>

@@ -1,14 +1,14 @@
 import { InputProps } from "../props";
 
-function InputTaskCount({value, setValue}: InputProps){
+function InputProcessorCount({value, setValue}: InputProps){
   // TODO add input error messages
-  const handleTaskCountChange = (num: number) => {
-    if (isNaN(num) || num <= 1) {
+  const handleChange = (num: number) => {
+    if (isNaN(num) || num <= 2) {
       setValue(2);
       return;
     }
-    if (num > 12) {
-      setValue(12);
+    if (num > 5) {
+      setValue(5);
       return;
     }
     setValue(num);
@@ -16,15 +16,15 @@ function InputTaskCount({value, setValue}: InputProps){
 
   return (
     <div className="flex flex-row content-center place-content-between max-w-[475px] py-2">
-      <label className="text-xl p-2">Task count:</label>
+      <label className="text-xl p-2">Processor count:</label>
       <input
         className="w-[200px] py-1 px-2 rounded-lg font-normal"
         type="number"
         defaultValue={value}
-        onChange={e => handleTaskCountChange(parseInt(e.target.value))}
+        onChange={e => handleChange(parseInt(e.target.value))}
       />
     </div>
   );
 }
 
-export default InputTaskCount;
+export default InputProcessorCount;
