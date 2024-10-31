@@ -29,7 +29,7 @@ export interface MatrixRenderProps {
   matrix: number[][];
 }
 
-export interface MatrixInputProps {
+export interface MatrixProps {
   matrix: number[][];
   setMatrix: React.Dispatch<React.SetStateAction<number[][]>>;
 }
