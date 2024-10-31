@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import InputTaskCount from "./components/InputTaskCount";
 import Matrix from './components/Matrix'
 import MC_DZZZ from './MC_DZZZ'
@@ -49,9 +49,56 @@ const n = taskGraph.length; // task count
 const m = 3; // processor count
 
 function App() {
+// TODO ADD handling for max processors, take these use states from Matrix component and put them here
+// with images and error if processor count > 5 ot < s3
   const [taskCount, setTaskCount] = useState<number>(2);
   const [isSidebarOpen, setIsSidebarOpen] = useState<Boolean>(true);
   const [chance, setChance] = useState<number>(0.5);
+
+  const [graph, setGraph] = useState(
+    Array.from(
+      {length: taskCount},
+      () => Array(taskCount).fill(0)
+    )
+  );
+  const [specification, setSpecification] = useState(
+    Array.from(
+      {length: taskCount},
+      () => Array(3).fill(0)
+    )
+  );
+
+  const updateMatrixSize = () => {
+    const arr = Array.from({length: taskCount}, () => Array(taskCount).fill(0))
+    arr.forEach((row, i) => {
+      row.forEach((_, j) => {
+        if (i in graph && j in graph[i]) {
+          arr[i][j] = graph[i][j];
+        }
+      })
+    }) 
+
+    setGraph(arr);
+  }
+
+  const updateSpecificatonSize = () => {
+    const arr = Array.from({length: taskCount}, () => Array(3).fill(0))
+    arr.forEach((row, i) => {
+      row.forEach((_, j) => {
+        if (i in specification && j in specification[i]) {
+          arr[i][j] = specification[i][j];
+        }
+      })
+    }) 
+
+    setSpecification(arr);
+  }
+
+  useEffect(() => {
+    // Copies old values to new array after changing dimensions
+    updateMatrixSize();
+    updateSpecificatonSize();
+  }, [taskCount])
 
   return (
     <BackgrounContainer>
@@ -76,8 +123,8 @@ function App() {
                 label={"Task Graph"}
               >
                 <Matrix 
-                  row={taskCount}
-                  col={taskCount}
+                  matrix={graph}
+                  setMatrix={setGraph}
                 />
               </MatrixContainer>
             </div>
@@ -85,8 +132,8 @@ function App() {
               label={"Task Specification"}
             >
               <Matrix
-                row={taskCount}
-                col={3}
+                matrix={specification}
+                setMatrix={setSpecification}
               />
             </MatrixContainer>
           </div>

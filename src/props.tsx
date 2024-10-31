@@ -29,11 +29,6 @@ export interface MatrixRenderProps {
   matrix: number[][];
 }
 
-export interface MatrixProps {
-  row: number;
-  col: number;
-}
-
 export interface MatrixInputProps {
   matrix: number[][];
   setMatrix: React.Dispatch<React.SetStateAction<number[][]>>;
