@@ -1,7 +1,7 @@
 function NOCImage({num}: any) {
   // TODO style
   return (
-    <img src={`NOC${num}.svg`}></img>
+    <img className="mx-auto" src={`NOC${num}.svg`}></img>
   );
 }
 

@@ -3,8 +3,8 @@ import { InputProps } from "../props";
 function InputProcessorCount({value, setValue}: InputProps){
   // TODO add input error messages
   const handleChange = (num: number) => {
-    if (isNaN(num) || num <= 2) {
-      setValue(2);
+    if (isNaN(num) || num < 3) {
+      setValue(3);
       return;
     }
     if (num > 5) {

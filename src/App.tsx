@@ -64,6 +64,7 @@ function App() {
       () => Array(taskCount).fill(0)
     )
   );
+
   const [specification, setSpecification] = useState(
     Array.from(
       {length: taskCount},
@@ -100,6 +101,7 @@ function App() {
   const onSubmitClick = () => {
     // TODO invoke MC_DZZZ algorithm
     setIsSidebarOpen(false);
+   
   }
 
   useEffect(() => {
