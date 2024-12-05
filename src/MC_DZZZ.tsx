@@ -19,7 +19,7 @@ const taskGraph = [
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // 10
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // 11
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // 12
-]
+];
   
 const taskSpecification = [
 // czas wykonania zadania, liczba żądanych procesorów, najpóźniejszy możliwy termin zakończenia zadania 
@@ -39,7 +39,7 @@ const taskSpecification = [
   [20, 3, 60]  // 12
 ];
 const n = taskGraph.length; // task count
-const m = 3; // processor count
+const m = 5; // processor count
 
 // code:
 function solveEdges(taskGraph: number[][]) {
@@ -73,13 +73,17 @@ function randRange(min: number, max: number) {
   return Math.floor(getSecuredRandomFloat()*(max-min) + min)
 }
 
+function getParents(taskIndex: number, edges: EdgeProps[]) {
+  return edges.filter(item => item.end === taskIndex).map(item => item.start)
+}
+
 function solveTaskPriority(taskIndex: number, maxVerticesToTask: number[], taskSpecification: number[][], edges: EdgeProps[], taskPriority: number[]) {
   if (maxVerticesToTask[taskIndex] === 0) {
     // Independent task on top of the tree
     return taskSpecification[taskIndex][0] * taskSpecification[taskIndex][1];
   }
   // filters edges that have end on taskIndex and retruns their start value giving parents array
-  const parents = edges.filter(item => item.end === taskIndex).map(item => item.start)
+  const parents = getParents(taskIndex, edges);
 
   // solves for maxProcessorCount accross all parents
   const maxProcParent = parents.reduce((parentMax, x) => taskSpecification[x][1] > taskSpecification[parentMax][1] ? x : parentMax, parents[0]);
@@ -147,12 +151,70 @@ function findTaskIndex(taskArr: number[][], task: number[]) {
   return 0;
 }
 
+function addTaskToChart(
+  chartResponse: any,
+  processorsUsed: number,
+  availableProcessors: number,
+  processorCount: number,
+  taskIndex: number,
+  timestamp: number) {
+
+  const isProcessorInstanceInData = (data, i) => {
+    if (!data.length) return false;
+
+    return data.some((el) => {
+      if(el.x === `P${i}`) return true;
+      return false;
+    });
+  }
+
+  return chartResponse.map((el, chartTaskIndex) => {
+    if(chartTaskIndex !== taskIndex) return el;
+    
+    let newData = el.data;
+    for (let i = processorCount - (availableProcessors + processorsUsed); i < processorCount - availableProcessors; i++) {
+      if(!isProcessorInstanceInData(newData, i)) {
+        newData = [...newData, {
+          x: `P${i}`,
+          y: [timestamp, timestamp+1]
+        }];
+        el.data = newData;
+        continue;
+      }
+
+      for(let dataIndex = 0; dataIndex < el.data.length; dataIndex++) {
+        if (newData[dataIndex].x !== `P${i}`) continue;
+        if (chartTaskIndex === 7 && i === 2) {
+          // TODO fix this edge case
+          console.log(newData[dataIndex].y[1] === timestamp)
+          console.log(newData[dataIndex])
+        }
+        // jeżeli nie doszło do przerwania to popraw końcowy czas
+        if (newData[dataIndex].y[1] === timestamp) newData[dataIndex].y[1] = timestamp+1; 
+        // w przeciwnym wypadku dodaj instancje
+        else newData = [...newData, {
+          x: `P${i}`,
+          y: [timestamp, timestamp+1]
+        }]
+      }
+    }
+
+    el.data = newData;
+    return el;
+  });
+}
+
 function MC_DZZZ(
   tasksGraph: number[][],         // G = (T, E), E ⊂ T × T
   taskSpecification: number[][],  // ((p_i, a_i, D_i), Ti ∈ T);
   taskCount: number,              // n
   processorCount: number          // m
 ) {
+  const chartResponse = Object.keys(taskSpecification).map((el) => ({
+    name: `Task${el}`,
+    data: []
+  }))
+
   // p: 0, a: 1, D: 2
   let t = 0;
 
@@ -183,7 +245,7 @@ function MC_DZZZ(
   }
   const availableTasks = maxVerticesToTask.map((el, index) => el === 0 ? index : -1).filter((el) => el !== -1); // B
 
-  const tasksCopy = structuredClone(taskSpecification);   // T copy (P)
+  let tasksCopy = Object.keys(taskSpecification).map(el => parseInt(el));   // T copy (P)
   const taskTimeLength = taskSpecification.map(el => el[0]);   // pi copy (qi)
 
   console.log(`Ilość zadań(n): ${taskCount}`)
@@ -197,30 +259,18 @@ function MC_DZZZ(
   console.log(`Kopia T - (P): ${tasksCopy}`)
   console.log(`Kopia pi - (qi): ${taskTimeLength}`)
 
-  // const Q = tasksCopy.map((el, index) => {
-    // })
-  //   if (taskTimeLength[index] && )
-
-  console.log(tasksCopy, availableTasks, taskTimeLength)
-  for (let i=0; i<tasksCopy.length; i++) {
-    // (q_j = 0, j ∈ B_i )                                              ∧  (q_i > 0)
-    // console.log(`
-    //   id: ${i}\n
-    //   taskTimeLength[i]: ${taskTimeLength[i]}\n
-    //   availableTasks.every((el, index) => taskTimeLength[el] === 0: ${availableTasks.every((el, index) => taskTimeLength[el] === 0)}\n
-    //   taskTimeLength[i] > 0: ${taskTimeLength[i] > 0}
-    //   `)
-    if (availableTasks.some((el) => taskTimeLength[el] === 0) && taskTimeLength[i] > 0)
-      console.log(i);
-  }
-  for (let i=0; i<tasksCopy.length; i++) {
-    if (availableTasks.every((el) => taskTimeLength[el] === 0) && taskTimeLength[i] > 0)
-      console.log(i);
-  }
-  while(tasksCopy !== null) {
+  while(tasksCopy.length > 0) {
     let av: number = processorCount;
     // Q = {Ti ∈ P : (qj = 0, j ∈ Bi ) ∧ (qi > 0)}; /*zbiór zadań gotowych*/
-    let Q = availableTasks;
+    let Q: number[] = [];
+    tasksCopy.forEach((task, i) => {
+      const newB = getParents(task, edges);
+      // console.log(t, i, task, Q, newB, newB.every((el) => taskTimeLength[el] === 0), taskTimeLength[task] > 0, taskTimeLength)
+      if (newB.every((el) => taskTimeLength[el] === 0) && taskTimeLength[task] > 0) {
+        Q = [...Q, task];
+      }
+    });
+    // console.log(Q)
     let x: number = 1;
     do{
       if (Q === null) {
@@ -238,29 +288,38 @@ function MC_DZZZ(
       const chosenTaskNumber = J[randRange(0, J.length)]
       const chosenTask = taskSpecification[chosenTaskNumber];
       x = 1;
-    
-      if (A < av) {
+      // console.log(taskTimeLength, chosenTaskNumber, chosenTask, Q)
+      // console.log(chosenTaskNumber, Q, A, av)
+      if (A <= av) {
+        // console.log("in", Q)
         // usereguj Ti da jednej jednostki czasowej [t, t+1] ?
         av -= chosenTask[1];
         taskTimeLength[chosenTaskNumber] -= x;
-
-        console.log(Q, chosenTaskNumber)
         Q = Q.filter(el => el !== chosenTaskNumber)
-        console.log(Q, chosenTaskNumber)
-        
+        addTaskToChart(chartResponse, chosenTask[1], av, processorCount, chosenTaskNumber, t)
         // if (chosenTask[1] === 2 && getSecuredRandomFloat() > 0.9) {
         //   // dodaj do zbioru T dodatkowe zadanie (T ′j gdzie aj = 3)
         // }
       } else {
-        console.log(Q, chosenTaskNumber)
         Q = Q.filter(el => el !== chosenTaskNumber)
-        console.log(Q, chosenTaskNumber)
       }
-    } while(av > 0)
+    } while(av > 0 && Q.length > 0)
 
     t += x;
-    // // TODO if qi = 0 then P = P − Ti ;
+    console.log(t, taskTimeLength);
+    // console.log(taskTimeLength)
+    // console.log(t)
+    // if(q[chosenTask] ==)
+    // console.log(taskTimeLength)
+    taskTimeLength.forEach((timeVal, index) => {
+      if(timeVal == 0) {
+        // console.log(tasksCopy, timeVal, index);
+        tasksCopy = tasksCopy.filter(task => task !== index)
+        // tasksCopy = tasksCopy.filter((task) => i !== task)
+      }
+    })
   }
+  console.log(JSON.stringify(chartResponse))
 }
 
 MC_DZZZ(taskGraph, taskSpecification, n, m);
