@@ -7,10 +7,11 @@ import BackgrounContainer from "./components/BackgroundContainer";
 import Navbar from "./components/Navbar";
 import Sidebar from "./components/Sidebar";
 import MatrixContainer from "./components/MatrixContainer";
-import Button from "./components/Button";
 import InputChance from "./components/InputChance";
 import NOCImage from "./components/NOCImage";
 import InputProcessorCount from "./components/InputProcessorCount";
+import { defaultSeries } from "./constants";
+import { ChartSeriesParams } from "./props";
 
 
 const taskGraph = [
@@ -53,10 +54,12 @@ const m = 3; // processor count
 function App() {
 // TODO ADD handling for max processors, take these use states from Matrix component and put them here
 // with images and error if processor count > 5 ot < s3
-  const [taskCount, setTaskCount] = useState<number>(2);
+  const [taskCount, setTaskCount] = useState<number>(n);
   const [isSidebarOpen, setIsSidebarOpen] = useState<Boolean>(true);
   const [chance, setChance] = useState<number>(0.5);
-  const [maxProcessors, setMaxProcessors] = useState<number>(0);
+  const [maxProcessors, setMaxProcessors] = useState<number>(5);
+  const [chartSeries, setChartSeries] = useState<ChartSeriesParams>(defaultSeries);
+  console.log(chartSeries)
 
   const [graph, setGraph] = useState(
     Array.from(
@@ -101,7 +104,7 @@ function App() {
   const onSubmitClick = () => {
     // TODO invoke MC_DZZZ algorithm
     setIsSidebarOpen(false);
-   
+    setChartSeries(MC_DZZZ(taskGraph, taskSpecification, taskCount, maxProcessors))
   }
 
   useEffect(() => {
@@ -155,11 +158,7 @@ function App() {
       </Sidebar>
 
       <div className={`z-0 max-w-[75%] h-screen p-2 mx-auto transition-filter ease-in-out ${isSidebarOpen ? "blur-sm pointer-events-none" : ""}`}>
-        <div className="flex place-content-between">
-          <Button>{"<- prev step"}</Button>
-          <Button>{"next step ->"}</Button>          
-        </div>
-        <TimelineChart />
+        <TimelineChart chartSeries={chartSeries} />
         {maxProcessors ? <NOCImage num={maxProcessors}/> : null}
       </div>
     </BackgrounContainer>

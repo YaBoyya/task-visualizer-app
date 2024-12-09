@@ -1,4 +1,4 @@
-import { fileURLToPath } from "url";
+import { ChartSeriesParams } from "./props";
 
 interface EdgeProps {
   start: number;
@@ -121,7 +121,7 @@ function addTaskToChart(
   availableProcessors: number,
   processorCount: number,
   taskIndex: number,
-  timestamp: number) {
+  timestamp: number): ChartSeriesParams {
 
   const isProcessorInstanceInData = (data, i) => {
     if (!data.length) return false;
@@ -135,7 +135,7 @@ function addTaskToChart(
   return chartResponse.map((el, chartTaskIndex) => {
     if(chartTaskIndex !== taskIndex) return el;
     
-    let newData = el.data;
+    let newData = structuredClone(el.data);
     for (let i = processorCount - (availableProcessors + processorsUsed); i < processorCount - availableProcessors; i++) {
       if(!isProcessorInstanceInData(newData, i)) {
         newData = [...newData, {
@@ -152,7 +152,7 @@ function addTaskToChart(
         if (chartTaskIndex === 7 && i === 2) {
           // TODO fix this edge case
           // Dlaczego dodają się instancje tylko w takiej sytuacji
-          console.log(timestamp, newData[dataIndex].y[1] === timestamp, newData);
+          // console.log(timestamp, newData[dataIndex].y[1] === timestamp, newData);
         }
         // jeżeli nie doszło do przerwania to popraw końcowy czas
         if (el.data[dataIndex].y[1] === timestamp) {
@@ -186,7 +186,8 @@ function MC_DZZZ(
     data: []
   }))
   let chartSteps = [chartResponse];
-
+  // console.log(tasksGraph, taskSpecification, taskCount, processorCount)
+  // return
   // p: 0, a: 1, D: 2
   let t = 0;
 
@@ -278,7 +279,7 @@ function MC_DZZZ(
     } while(av > 0 && Q.length > 0)
 
     t += x;
-    console.log(t, taskTimeLength);
+    // console.log(t, taskTimeLength);
     // console.log(taskTimeLength)
     // console.log(t)
     // if(q[chosenTask] ==)
@@ -292,11 +293,11 @@ function MC_DZZZ(
     });
 
     // add step every 5 time intervals
-    if(t%5 === 0) {
-      chartSteps = [...chartSteps, chartResponse];
+    if(t%5 === 0 || tasksCopy.length === 0) {
+      chartSteps = [...chartSteps, structuredClone(chartResponse)];
     }
   }
-  console.log(JSON.stringify(chartResponse))
+  // console.log(JSON.stringify(chartResponse))
   return chartSteps;
 }
 

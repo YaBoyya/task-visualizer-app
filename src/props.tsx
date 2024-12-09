@@ -39,3 +39,5 @@ export interface EdgeProps {
   start: number;
   end: number;
 }
+
+export type ChartSeriesParams = { name: string; data: { x: string; y: number[]; }[]; }[][];

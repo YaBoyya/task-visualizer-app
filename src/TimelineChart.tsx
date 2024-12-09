@@ -1,140 +1,9 @@
 import ReactApexChart from "react-apexcharts";
 import { ApexOptions } from "apexcharts";
+import Button from "./components/Button";
+import { useEffect, useState } from "react";
+import { ChartSeriesParams } from "./props";
 
-const series = [
-  {
-    name: 'Task0',
-    data: [
-      {
-        x: 'P4',
-        y: [15, 25]
-      },
-      {
-        x: 'P4',
-        y: [30, 35]
-      },
-    ]
-  },
-  {
-    name: 'Task1',
-    data: [
-      {
-        x: 'P4',
-        y: [35, 40]
-      },
-      {
-        x: 'P3',
-        y: [35, 40]
-      },
-      {
-        x: 'P2',
-        y: [40, 45]
-      },
-      {
-        x: 'P1',
-        y: [40, 45]
-      },      {
-        x: 'P0',
-        y: [40, 45]
-      },
-    ]
-  },
-  {
-    name: 'Task2',
-    data: [
-      {
-        x: 'P0',
-        y: [0, 20]
-      },
-      {
-        x: 'P1',
-        y: [0, 20]
-      },
-      {
-        x: 'P2',
-        y: [0, 20]
-      },
-    ]
-  },
-  {
-    name: 'Task3',
-    data: [
-      {
-        x: 'P4',
-        y: [0, 15]
-      },
-      {
-        x: 'P3',
-        y: [0, 15]
-      }
-    ]
-  },
-  {
-    name: 'Task4',
-    data: [
-      {
-        x: 'P3',
-        y: [15, 30]
-      },
-    ]
-  },
-  {
-    name: 'Task5',
-    data: [
-      {
-        x: 'P4',
-        y: [25, 30]
-      },
-      {
-        x: 'P3',
-        y: [30, 35]
-      },
-    ]
-  },
-  {
-    name: 'Task6',
-    data: [
-      {
-        x: 'P2',
-        y: [20, 40]
-      },
-      {
-        x: 'P1',
-        y: [20, 40]
-      },
-      {
-        x: 'P0',
-        y: [20, 40]
-      },
-    ]
-  },
-  {
-    name: 'Task7',
-    data: [
-      {
-        x: 'P2',
-        y: [45, 50]
-      },
-      {
-        x: 'P1',
-        y: [45, 50]
-      },
-      {
-        x: 'P0',
-        y: [45, 50]
-      },
-    ]
-  },
-  {
-    name: 'Task8',
-    data: [
-      {
-        x: 'P3',
-        y: [40, 45]
-      },
-    ]
-  },
-]
 
 const options: ApexOptions = {
   chart: {
@@ -174,42 +43,29 @@ const options: ApexOptions = {
   },
 }
 
-function TimelineChart() {
-  // TODO update steps
-  // const dataParams = [
-  //   { type: "string", id: "President" },
-  //   { type: "string", id: "dummy bar label" },
-  //   { type: "string", role: "tooltip" },
-  //   { type: "number", id: "Start" },
-  //   { type: "number", id: "End" },
-  // ]
-  // const [data, setData] = useState<(typeof dataParams | dataRow[])[]>([dataParams]);
-  // const [step, setStep] = useState(layeredData.length);
+function TimelineChart({chartSeries}: {chartSeries: ChartSeriesParams;}) {
+  const [step, setStep] = useState<number>(chartSeries.length - 1)
 
-  // useEffect(() => {
-  //   let newData: (typeof dataParams  | dataRow[])[] = [dataParams];
-  //   for (let i = 0; i < step; i++) {
-  //     newData = newData.concat(layeredData[i]);
-  //   }
-  //   setData(newData);
-  // }, [step]);
+  const handleStepChange = (it: number) => setStep(prev => {
+    let newStep = prev + it;
+    const maxSteps = chartSeries.length - 1;
 
-  // const handleStep = (subtrahend: number) => {
-  //   let diff = step + subtrahend;
-  //   if (diff <= 1) {
-  //     setStep(1);
-  //   } else if (diff >= layeredData.length){
-  //     setStep(layeredData.length);
-  //   } else {
-  //     setStep(diff);
-  //   }
-  // }
+    if (newStep < 0) newStep = 0;
+    else if (newStep > maxSteps) newStep = maxSteps;
+    return newStep;
+  });
 
+  useEffect(() => {
+    setStep(chartSeries.length - 1);
+  }, [chartSeries]);
+  
   return(
     <>
-      {/* <button onClick={() => handleStep(-1)}>prev</button> */}
-      {/* <button onClick={() => handleStep(1)}>next</button> */}
-      <ReactApexChart options={options} series={series} type="rangeBar" height={350} />  
+      <div className="flex place-content-between">
+        <Button onClick={() => handleStepChange(-1)}>{"<- prev step"}</Button>
+        <Button onClick={() => handleStepChange(1)}>{"next step ->"}</Button>          
+      </div>
+      <ReactApexChart options={options} series={chartSeries[step]} type="rangeBar" height={350} />  
     </>
   );
 }
