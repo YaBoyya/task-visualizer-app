@@ -1,45 +1,9 @@
+import { fileURLToPath } from "url";
+
 interface EdgeProps {
   start: number;
   end: number;
 }
-
-// inputs: 
-const taskGraph = [
-// 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,11,12
-  [0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0], // 0
-  [0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0], // 1
-  [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0], // 2
-  [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0], // 3
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], // 4
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], // 5
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], // 6
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // 7
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0], // 8
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], // 9
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // 10
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // 11
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // 12
-];
-  
-const taskSpecification = [
-// czas wykonania zadania, liczba żądanych procesorów, najpóźniejszy możliwy termin zakończenia zadania 
-// pi, ai, Di
-  [30, 3, 195], // 0
-  [10, 2, 155], // 1
-  [5,  1, 30],   // 2
-  [10, 3, 80], // 3
-  [15, 1, 105], // 4
-  [20, 1, 110], // 5
-  [25, 3, 135], // 6
-  [25, 1, 25], // 7
-  [10, 1, 50], // 8
-  [20, 2, 90], // 9
-  [20, 3, 40], // 10
-  [10, 2, 20], // 11
-  [20, 3, 60]  // 12
-];
-const n = taskGraph.length; // task count
-const m = 5; // processor count
 
 // code:
 function solveEdges(taskGraph: number[][]) {
@@ -183,19 +147,26 @@ function addTaskToChart(
       }
 
       for(let dataIndex = 0; dataIndex < el.data.length; dataIndex++) {
-        if (newData[dataIndex].x !== `P${i}`) continue;
+        console.log(timestamp, newData)
+        if (el.data[dataIndex].x !== `P${i}`) continue;
         if (chartTaskIndex === 7 && i === 2) {
           // TODO fix this edge case
-          console.log(newData[dataIndex].y[1] === timestamp)
-          console.log(newData[dataIndex])
+          // Dlaczego dodają się instancje tylko w takiej sytuacji
+          console.log(timestamp, newData[dataIndex].y[1] === timestamp, newData);
         }
         // jeżeli nie doszło do przerwania to popraw końcowy czas
-        if (newData[dataIndex].y[1] === timestamp) newData[dataIndex].y[1] = timestamp+1; 
+        if (el.data[dataIndex].y[1] === timestamp) {
+          newData[dataIndex].y[1] += 1;
         // w przeciwnym wypadku dodaj instancje
-        else newData = [...newData, {
-          x: `P${i}`,
-          y: [timestamp, timestamp+1]
-        }]
+        } else { 
+          newData = [...newData, {
+            x: `P${i}`,
+            y: [timestamp, timestamp+1]
+          }]
+        }
+        // if (chartTaskIndex === 7 && i === 2) {
+        //   console.log(newData, timestamp)
+        // }
       }
     }
 
@@ -214,6 +185,7 @@ function MC_DZZZ(
     name: `Task${el}`,
     data: []
   }))
+  let chartSteps = [chartResponse];
 
   // p: 0, a: 1, D: 2
   let t = 0;
@@ -317,11 +289,57 @@ function MC_DZZZ(
         tasksCopy = tasksCopy.filter(task => task !== index)
         // tasksCopy = tasksCopy.filter((task) => i !== task)
       }
-    })
+    });
+
+    // add step every 5 time intervals
+    if(t%5 === 0) {
+      chartSteps = [...chartSteps, chartResponse];
+    }
   }
   console.log(JSON.stringify(chartResponse))
+  return chartSteps;
 }
 
-MC_DZZZ(taskGraph, taskSpecification, n, m);
-
 export default MC_DZZZ;
+
+if (import.meta.filename === import.meta.url.substring(7)) {
+  // inputs: 
+  const taskGraph = [
+  // 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,11,12
+    [0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0], // 0
+    [0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0], // 1
+    [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0], // 2
+    [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0], // 3
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], // 4
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], // 5
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], // 6
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // 7
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0], // 8
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], // 9
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // 10
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // 11
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // 12
+  ];
+    
+  const taskSpecification = [
+  // czas wykonania zadania, liczba żądanych procesorów, najpóźniejszy możliwy termin zakończenia zadania 
+  // pi, ai, Di
+    [30, 3, 195], // 0
+    [10, 2, 155], // 1
+    [5,  1, 30],  // 2
+    [10, 3, 80],  // 3
+    [15, 1, 105], // 4
+    [20, 1, 110], // 5
+    [25, 3, 135], // 6
+    [25, 1, 25],  // 7
+    [10, 1, 50],  // 8
+    [20, 2, 90],  // 9
+    [20, 3, 40],  // 10
+    [10, 2, 20],  // 11
+    [20, 3, 60]   // 12
+  ];
+  const n = taskGraph.length; // task count
+  const m = 5; // processor count
+
+  MC_DZZZ(taskGraph, taskSpecification, n, m);  
+}
