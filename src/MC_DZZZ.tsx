@@ -5,7 +5,6 @@ interface EdgeProps {
   end: number;
 }
 
-// code:
 function solveEdges(taskGraph: number[][]) {
   // returns list of edges based on task graph
   let edges: EdgeProps[] = []; 
@@ -109,12 +108,6 @@ function solveMaxVerticesToTask(taskIndex: number, edges: EdgeProps[], maxVertic
   // return taskGraph.reduce((partialSum, row) => partialSum + row[taskIndex], 0);
 }
 
-function findTaskIndex(taskArr: number[][], task: number[]) { 
-  // TODO needs testing, should work, but most likely won't
-  console.log(taskArr.forEach((item) => item.every((el: number, i: number) => el === task[i]) ? item : 0));
-  return 0;
-}
-
 function addTaskToChart(
   chartResponse: any,
   processorsUsed: number,
@@ -122,7 +115,7 @@ function addTaskToChart(
   processorCount: number,
   taskIndex: number,
   timestamp: number): ChartSeriesParams {
-
+// TODO Update for new data
   const isProcessorInstanceInData = (data, i) => {
     if (!data.length) return false;
 
@@ -147,7 +140,7 @@ function addTaskToChart(
       }
 
       for(let dataIndex = 0; dataIndex < el.data.length; dataIndex++) {
-        console.log(timestamp, newData)
+        // console.log(timestamp, newData)
         if (el.data[dataIndex].x !== `P${i}`) continue;
         if (chartTaskIndex === 7 && i === 2) {
           // TODO fix this edge case
@@ -173,6 +166,10 @@ function addTaskToChart(
     el.data = newData;
     return el;
   });
+}
+
+function add3ProcTask() {
+  console.log("DZZZ!!!")
 }
 
 function MC_DZZZ(
@@ -216,9 +213,17 @@ function MC_DZZZ(
       throw Error(`Uszeregowanie nie istnieje.${i}, ${criticalTaskTimes[i]}, ${taskSpecification[i][2]}`);
     }
   }
-  const availableTasks = maxVerticesToTask.map((el, index) => el === 0 ? index : -1).filter((el) => el !== -1); // B
 
-  let tasksCopy = Object.keys(taskSpecification).map(el => parseInt(el));   // T copy (P)
+  let tasksCopy = Object.keys(taskSpecification).map((el: any, i: number) => ({
+    baseTask: parseInt(el),
+    p: taskSpecification[el][0],
+    a: taskSpecification[el][1],
+    D: taskSpecification[el][2],
+    q: taskSpecification[el][0],
+    taskPriority: taskPriority[i],
+    criticalTaskTimes: criticalTaskTimes[i],
+    maxVerticesToTask: maxVerticesToTask[i]
+  }));   // T copy (P)
   const taskTimeLength = taskSpecification.map(el => el[0]);   // pi copy (qi)
 
   console.log(`Ilość zadań(n): ${taskCount}`)
@@ -228,53 +233,58 @@ function MC_DZZZ(
   console.log(`Priorytet zadania po korekcie dla zadań zależnych(w): ${taskPriority}`)
   console.log(`Czas zadanie krytycznego(ti): ${criticalTaskTimes}`)
   console.log(`Maksymalna liczba krawędzi w G prowadząca do Ti(h): ${maxVerticesToTask}`)
-  console.log(`Dostępne zadania(B): ${availableTasks}`)
   console.log(`Kopia T - (P): ${tasksCopy}`)
   console.log(`Kopia pi - (qi): ${taskTimeLength}`)
 
-  while(tasksCopy.length > 0) {
+  while(tasksCopy.some(task => task.q > 0)) {
     let av: number = processorCount;
     // Q = {Ti ∈ P : (qj = 0, j ∈ Bi ) ∧ (qi > 0)}; /*zbiór zadań gotowych*/
     let Q: number[] = [];
-    tasksCopy.forEach((task, i) => {
-      const newB = getParents(task, edges);
+    tasksCopy.forEach(task => {
+      const newB = getParents(task.baseTask, edges).map(i => tasksCopy.filter(task => task.baseTask !== i)[0]);
+      // const newBa = newB
+      // console.log(newB, newBa) 
+      // console
       // console.log(t, i, task, Q, newB, newB.every((el) => taskTimeLength[el] === 0), taskTimeLength[task] > 0, taskTimeLength)
-      if (newB.every((el) => taskTimeLength[el] === 0) && taskTimeLength[task] > 0) {
+      if (newB.every((task) => task.q === 0) && task.q > 0) {
         Q = [...Q, task];
       }
     });
     // console.log(Q)
     let x: number = 1;
+    console.log(Q)
     do{
       if (Q === null) {
         break;
       }
-      const M = Math.max(...Q.map((taskIndex) => taskPriority[taskIndex])); // Max task priority in Q
-      const W = Q.filter(taskIndex => taskPriority[taskIndex] === M);  // Tasks with M priority
+      const M = Math.max(...Q.map((task) => task.taskPriority)); // Max task priority in Q
+      const W = Q.filter(task => task.taskPriority === M);  // Tasks with M priority
+      const A = Math.max(...W.map((task) => task.a)); // Max processors in W
+      const F = W.filter(task => task.a === A);  // Tasks with A processors
   
-      const A = Math.max(...W.map((taskIndex) => taskSpecification[taskIndex][1])); // Max processors in W
-      const F = W.filter(taskIndex => taskSpecification[taskIndex][1] === A);  // Tasks with A processors
-  
-      const C = Math.max(...F.map((taskIndex) => maxVerticesToTask[taskIndex])); // Max vertices to task in F
-      const J = F.filter(taskIndex => maxVerticesToTask[taskIndex] === C);  // Task with F vertices to them
-  
-      const chosenTaskNumber = J[randRange(0, J.length)]
-      const chosenTask = taskSpecification[chosenTaskNumber];
+      const C = Math.max(...F.map((task) => task.maxVerticesToTask)); // Max vertices to task in F
+      const J = F.filter(task => task.maxVerticesToTask === C);  // Task with F vertices to them
+
+      const chosenTask = J[randRange(0, J.length)]
+      const chosenTaskNumber = chosenTask.baseTask;
+      // console.log(chosenTask, chosenTaskNumber)
       x = 1;
       // console.log(taskTimeLength, chosenTaskNumber, chosenTask, Q)
       // console.log(chosenTaskNumber, Q, A, av)
       if (A <= av) {
         // console.log("in", Q)
         // usereguj Ti da jednej jednostki czasowej [t, t+1] ?
-        av -= chosenTask[1];
-        taskTimeLength[chosenTaskNumber] -= x;
-        Q = Q.filter(el => el !== chosenTaskNumber)
+        av -= chosenTask.a;
+        chosenTask.q -= x;
+        Q = Q.filter(el => el.baseTask !== chosenTaskNumber)
         addTaskToChart(chartResponse, chosenTask[1], av, processorCount, chosenTaskNumber, t)
-        // if (chosenTask[1] === 2 && getSecuredRandomFloat() > 0.9) {
-        //   // dodaj do zbioru T dodatkowe zadanie (T ′j gdzie aj = 3)
-        // }
+        // console.log(chosenTask, chosenTask[1] === 2)
+        if (chosenTask.a === 2 && !chosenTask.q && getSecuredRandomFloat() > 0.9) {
+          // dodaj do zbioru T dodatkowe zadanie (T ′j gdzie aj = 3)
+          add3ProcTask();
+        }
       } else {
-        Q = Q.filter(el => el !== chosenTaskNumber)
+        Q = Q.filter(el => el.baseTask !== chosenTaskNumber)
       }
     } while(av > 0 && Q.length > 0)
 
@@ -284,20 +294,21 @@ function MC_DZZZ(
     // console.log(t)
     // if(q[chosenTask] ==)
     // console.log(taskTimeLength)
-    taskTimeLength.forEach((timeVal, index) => {
-      if(timeVal == 0) {
-        // console.log(tasksCopy, timeVal, index);
-        tasksCopy = tasksCopy.filter(task => task !== index)
-        // tasksCopy = tasksCopy.filter((task) => i !== task)
-      }
-    });
+    // taskTimeLength.forEach((timeVal, index) => {
+    //   if(timeVal == 0) {
+    //     // console.log(tasksCopy, timeVal, index);
+    //     tasksCopy = tasksCopy.filter(task => task.baseTask !== index)
+    //     // tasksCopy = tasksCopy.filter((task) => i !== task)
+    //   }
+    // });
 
     // add step every 5 time intervals
     if(t%5 === 0 || tasksCopy.length === 0) {
       chartSteps = [...chartSteps, structuredClone(chartResponse)];
     }
   }
-  // console.log(JSON.stringify(chartResponse))
+  console.log(tasksCopy)
+  console.log(JSON.stringify(chartResponse))
   return chartSteps;
 }
 
