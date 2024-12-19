@@ -1,3 +1,4 @@
+import { timeStamp } from "console";
 import { ChartSeriesParams } from "./props";
 
 interface EdgeProps {
@@ -40,10 +41,12 @@ function getParents(taskIndex: number, edges: EdgeProps[]) {
   return edges.filter(item => item.end === taskIndex).map(item => item.start)
 }
 
-function solveTaskPriority(taskIndex: number, maxVerticesToTask: number[], taskSpecification: number[][], edges: EdgeProps[], taskPriority: number[]) {
+function solveTaskPriority(taskIndex: number, maxVerticesToTask: number[], taskSpecification: number[][], edges: EdgeProps[], taskPriority: number[], isAdditionalTask: boolean = false) {
+  const basePriority = isAdditionalTask ? taskSpecification[taskIndex][0] * 3 : taskSpecification[taskIndex][0] * taskSpecification[taskIndex][1];
+  
   if (maxVerticesToTask[taskIndex] === 0) {
     // Independent task on top of the tree
-    return taskSpecification[taskIndex][0] * taskSpecification[taskIndex][1];
+    return basePriority;
   }
   // filters edges that have end on taskIndex and retruns their start value giving parents array
   const parents = getParents(taskIndex, edges);
@@ -55,7 +58,7 @@ function solveTaskPriority(taskIndex: number, maxVerticesToTask: number[], taskS
   
   // if there aren't any other parent alike returns otherwise checks for maxVertValue
   if (allMaxProcParents.length === 1) {
-    return taskPriority[maxProcParent] + taskSpecification[taskIndex][0] * taskSpecification[taskIndex][1];
+    return taskPriority[maxProcParent] + basePriority;
   }
 
   // solves for maxVertParent accross all parents
@@ -65,11 +68,11 @@ function solveTaskPriority(taskIndex: number, maxVerticesToTask: number[], taskS
   
   // if there aren't any other parent alike returns otherwise checks for lowest index
   if (allMaxVertParents.length === 1) {
-    return taskPriority[maxVertParent] + taskSpecification[taskIndex][0] * taskSpecification[taskIndex][1];
+    return taskPriority[maxVertParent] + basePriority;
   }
 
   // finally takes parent with lowest index
-  return taskPriority[Math.min(...allMaxVertParents)] + taskSpecification[taskIndex][0] * taskSpecification[taskIndex][1];
+  return taskPriority[Math.min(...allMaxVertParents)] + basePriority;
   
   // old
   // const parentMaxProcessorCount = parents.reduce((parentMax, x, i, arr) => taskSpecification[x][1] > taskSpecification[parentMax][1] ? taskSpecification[x][1] : taskSpecification[parentMax][1], 0)
@@ -110,12 +113,10 @@ function solveMaxVerticesToTask(taskIndex: number, edges: EdgeProps[], maxVertic
 
 function addTaskToChart(
   chartResponse: any,
-  processorsUsed: number,
   availableProcessors: number,
   processorCount: number,
-  taskIndex: number,
+  task: any,
   timestamp: number): ChartSeriesParams {
-// TODO Update for new data
   const isProcessorInstanceInData = (data, i) => {
     if (!data.length) return false;
 
@@ -125,11 +126,13 @@ function addTaskToChart(
     });
   }
 
-  return chartResponse.map((el, chartTaskIndex) => {
-    if(chartTaskIndex !== taskIndex) return el;
-    
+  return chartResponse.map((el) => {
+    if (!(el.name === `Task${task.baseTask}` || (el.name === `Task${task.baseTask}'` && task.additionalTask))) {
+      return el;
+    }
+    console.log(el.data)
     let newData = structuredClone(el.data);
-    for (let i = processorCount - (availableProcessors + processorsUsed); i < processorCount - availableProcessors; i++) {
+    for (let i = processorCount - (availableProcessors + task.a); i < processorCount - availableProcessors; i++) {
       if(!isProcessorInstanceInData(newData, i)) {
         newData = [...newData, {
           x: `P${i}`,
@@ -140,26 +143,20 @@ function addTaskToChart(
       }
 
       for(let dataIndex = 0; dataIndex < el.data.length; dataIndex++) {
-        // console.log(timestamp, newData)
         if (el.data[dataIndex].x !== `P${i}`) continue;
-        if (chartTaskIndex === 7 && i === 2) {
-          // TODO fix this edge case
-          // Dlaczego dodają się instancje tylko w takiej sytuacji
-          // console.log(timestamp, newData[dataIndex].y[1] === timestamp, newData);
-        }
+
         // jeżeli nie doszło do przerwania to popraw końcowy czas
         if (el.data[dataIndex].y[1] === timestamp) {
           newData[dataIndex].y[1] += 1;
-        // w przeciwnym wypadku dodaj instancje
-        } else { 
+        }
+
+        // sprawdź czy ostatni przedział jest mniejszy niż timestamp, aby nie powielać tworzenia nowych instancji Pi
+        if(newData[newData.length-1].y[1] < timestamp){
           newData = [...newData, {
             x: `P${i}`,
             y: [timestamp, timestamp+1]
           }]
         }
-        // if (chartTaskIndex === 7 && i === 2) {
-        //   console.log(newData, timestamp)
-        // }
       }
     }
 
@@ -168,8 +165,14 @@ function addTaskToChart(
   });
 }
 
-function add3ProcTask() {
-  console.log("DZZZ!!!")
+function create3ProcTask(tasks, chosenTask, solveNewTaskPriority) {
+  return {
+    ...chosenTask,
+    taskPriority: solveNewTaskPriority(chosenTask.baseTask, true),
+    additionalTask: true,
+    q: chosenTask.p,
+    a: 3
+  };
 }
 
 function MC_DZZZ(
@@ -178,7 +181,7 @@ function MC_DZZZ(
   taskCount: number,              // n
   processorCount: number          // m
 ) {
-  const chartResponse = Object.keys(taskSpecification).map((el) => ({
+  let chartResponse = Object.keys(taskSpecification).map((el) => ({
     name: `Task${el}`,
     data: []
   }))
@@ -222,7 +225,8 @@ function MC_DZZZ(
     q: taskSpecification[el][0],
     taskPriority: taskPriority[i],
     criticalTaskTimes: criticalTaskTimes[i],
-    maxVerticesToTask: maxVerticesToTask[i]
+    maxVerticesToTask: maxVerticesToTask[i],
+    additionalTask: false
   }));   // T copy (P)
   const taskTimeLength = taskSpecification.map(el => el[0]);   // pi copy (qi)
 
@@ -241,7 +245,7 @@ function MC_DZZZ(
     // Q = {Ti ∈ P : (qj = 0, j ∈ Bi ) ∧ (qi > 0)}; /*zbiór zadań gotowych*/
     let Q: number[] = [];
     tasksCopy.forEach(task => {
-      const newB = getParents(task.baseTask, edges).map(i => tasksCopy.filter(task => task.baseTask !== i)[0]);
+      const newB = getParents(task.baseTask, edges).map(i => tasksCopy.filter(task => task.baseTask === i)[0]);
       // const newBa = newB
       // console.log(newB, newBa) 
       // console
@@ -252,7 +256,7 @@ function MC_DZZZ(
     });
     // console.log(Q)
     let x: number = 1;
-    console.log(Q)
+    // console.log(Q)
     do{
       if (Q === null) {
         break;
@@ -277,11 +281,17 @@ function MC_DZZZ(
         av -= chosenTask.a;
         chosenTask.q -= x;
         Q = Q.filter(el => el.baseTask !== chosenTaskNumber)
-        addTaskToChart(chartResponse, chosenTask[1], av, processorCount, chosenTaskNumber, t)
+        addTaskToChart(chartResponse, av, processorCount, chosenTask, t)
         // console.log(chosenTask, chosenTask[1] === 2)
-        if (chosenTask.a === 2 && !chosenTask.q && getSecuredRandomFloat() > 0.9) {
+        if (chosenTask.a === 2 && !chosenTask.q && getSecuredRandomFloat() > 0.9) {  // TODO: temps
           // dodaj do zbioru T dodatkowe zadanie (T ′j gdzie aj = 3)
-          add3ProcTask();
+          // taskPriority[i] = solveTaskPriority(i, maxVerticesToTask, taskSpecification, edges, taskPriority);
+          const callback = (i, isAdditionalTask) => solveTaskPriority(i, maxVerticesToTask, taskSpecification, edges, taskPriority, isAdditionalTask);
+          chartResponse = [...chartResponse, {
+            name: `Task${chosenTask.baseTask}'`,
+            data: []
+          }]
+          tasksCopy = [...tasksCopy, create3ProcTask(tasksCopy, chosenTask, callback)];
         }
       } else {
         Q = Q.filter(el => el.baseTask !== chosenTaskNumber)
