@@ -40,4 +40,26 @@ export interface EdgeProps {
   end: number;
 }
 
+export interface TaskProps {
+  baseTask: number;
+  p: number;
+  a: number;
+  D: number;
+  q: number;
+  taskPriority: number;
+  criticalTaskTimes: number;
+  maxVerticesToTask: number;
+  additionalTask: boolean;
+}
+
+export interface ChartDataProps {
+  x: string;
+  y:number[];
+}
+
+export interface ChartResponseProps {
+  name: String;
+  data: ChartDataProps[];
+}
+
 export type ChartSeriesParams = { name: string; data: { x: string; y: number[]; }[]; }[][];

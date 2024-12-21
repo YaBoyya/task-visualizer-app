@@ -1,10 +1,4 @@
-import { timeStamp } from "console";
-import { ChartSeriesParams } from "./props";
-
-interface EdgeProps {
-  start: number;
-  end: number;
-}
+import { ChartDataProps, ChartResponseProps, ChartSeriesParams, EdgeProps, TaskProps } from "./props";
 
 function solveEdges(taskGraph: number[][]) {
   // returns list of edges based on task graph
@@ -73,10 +67,6 @@ function solveTaskPriority(taskIndex: number, maxVerticesToTask: number[], taskS
 
   // finally takes parent with lowest index
   return taskPriority[Math.min(...allMaxVertParents)] + basePriority;
-  
-  // old
-  // const parentMaxProcessorCount = parents.reduce((parentMax, x, i, arr) => taskSpecification[x][1] > taskSpecification[parentMax][1] ? taskSpecification[x][1] : taskSpecification[parentMax][1], 0)
-  // x > arr[parentMax] ? arr[i] : parentMax
 }
 
 function solveCriticalTaskTimes(startTask: number, taskGraph: number[][], taskSpecification: number[][]) {
@@ -117,7 +107,7 @@ function addTaskToChart(
   processorCount: number,
   task: any,
   timestamp: number): ChartSeriesParams {
-  const isProcessorInstanceInData = (data, i) => {
+  const isProcessorInstanceInData = (data: ChartDataProps[], i: number) => {
     if (!data.length) return false;
 
     return data.some((el) => {
@@ -126,7 +116,7 @@ function addTaskToChart(
     });
   }
 
-  return chartResponse.map((el) => {
+  return chartResponse.map((el: ChartResponseProps) => {
     if (!(el.name === `Task${task.baseTask}` || (el.name === `Task${task.baseTask}'` && task.additionalTask))) {
       return el;
     }
@@ -165,7 +155,7 @@ function addTaskToChart(
   });
 }
 
-function create3ProcTask(tasks, chosenTask, solveNewTaskPriority) {
+function create3ProcTask(chosenTask: TaskProps, solveNewTaskPriority: Function) {
   return {
     ...chosenTask,
     taskPriority: solveNewTaskPriority(chosenTask.baseTask, true),
@@ -186,8 +176,6 @@ function MC_DZZZ(
     data: []
   }))
   let chartSteps = [chartResponse];
-  // console.log(tasksGraph, taskSpecification, taskCount, processorCount)
-  // return
   // p: 0, a: 1, D: 2
   let t = 0;
 
@@ -217,7 +205,7 @@ function MC_DZZZ(
     }
   }
 
-  let tasksCopy = Object.keys(taskSpecification).map((el: any, i: number) => ({
+  let tasksCopy: TaskProps[] = Object.keys(taskSpecification).map((el: any, i: number) => ({
     baseTask: parseInt(el),
     p: taskSpecification[el][0],
     a: taskSpecification[el][1],
@@ -228,35 +216,20 @@ function MC_DZZZ(
     maxVerticesToTask: maxVerticesToTask[i],
     additionalTask: false
   }));   // T copy (P)
-  const taskTimeLength = taskSpecification.map(el => el[0]);   // pi copy (qi)
-
-  console.log(`Ilość zadań(n): ${taskCount}`)
-  console.log(`Ilość procesów(w): ${processorCount}`)
-  console.log(`Macierz specyfikacji zadań((pi, ai, Di), Ti ∈ T): ${JSON.stringify(taskSpecification)}`)
-  console.log(`Zbiór krawędzi grafu(E): ${JSON.stringify(edges)}`)
-  console.log(`Priorytet zadania po korekcie dla zadań zależnych(w): ${taskPriority}`)
-  console.log(`Czas zadanie krytycznego(ti): ${criticalTaskTimes}`)
-  console.log(`Maksymalna liczba krawędzi w G prowadząca do Ti(h): ${maxVerticesToTask}`)
-  console.log(`Kopia T - (P): ${tasksCopy}`)
-  console.log(`Kopia pi - (qi): ${taskTimeLength}`)
 
   while(tasksCopy.some(task => task.q > 0)) {
     let av: number = processorCount;
-    // Q = {Ti ∈ P : (qj = 0, j ∈ Bi ) ∧ (qi > 0)}; /*zbiór zadań gotowych*/
-    let Q: number[] = [];
+
+    let Q: TaskProps[] = [];
     tasksCopy.forEach(task => {
       const newB = getParents(task.baseTask, edges).map(i => tasksCopy.filter(task => task.baseTask === i)[0]);
-      // const newBa = newB
-      // console.log(newB, newBa) 
-      // console
-      // console.log(t, i, task, Q, newB, newB.every((el) => taskTimeLength[el] === 0), taskTimeLength[task] > 0, taskTimeLength)
-      if (newB.every((task) => task.q === 0) && task.q > 0) {
+
+      if (newB.every((task: TaskProps) => task.q === 0) && task.q > 0) {
         Q = [...Q, task];
       }
     });
-    // console.log(Q)
     let x: number = 1;
-    // console.log(Q)
+
     do{
       if (Q === null) {
         break;
@@ -271,27 +244,22 @@ function MC_DZZZ(
 
       const chosenTask = J[randRange(0, J.length)]
       const chosenTaskNumber = chosenTask.baseTask;
-      // console.log(chosenTask, chosenTaskNumber)
+
       x = 1;
-      // console.log(taskTimeLength, chosenTaskNumber, chosenTask, Q)
-      // console.log(chosenTaskNumber, Q, A, av)
+
       if (A <= av) {
-        // console.log("in", Q)
-        // usereguj Ti da jednej jednostki czasowej [t, t+1] ?
         av -= chosenTask.a;
         chosenTask.q -= x;
         Q = Q.filter(el => el.baseTask !== chosenTaskNumber)
         addTaskToChart(chartResponse, av, processorCount, chosenTask, t)
-        // console.log(chosenTask, chosenTask[1] === 2)
-        if (chosenTask.a === 2 && !chosenTask.q && getSecuredRandomFloat() > 0.9) {  // TODO: temps
-          // dodaj do zbioru T dodatkowe zadanie (T ′j gdzie aj = 3)
-          // taskPriority[i] = solveTaskPriority(i, maxVerticesToTask, taskSpecification, edges, taskPriority);
-          const callback = (i, isAdditionalTask) => solveTaskPriority(i, maxVerticesToTask, taskSpecification, edges, taskPriority, isAdditionalTask);
+
+        if (chosenTask.a === 2 && !chosenTask.q && getSecuredRandomFloat() > 0.9) {
+          const callback = (i: number, isAdditionalTask: boolean) => solveTaskPriority(i, maxVerticesToTask, taskSpecification, edges, taskPriority, isAdditionalTask);
           chartResponse = [...chartResponse, {
             name: `Task${chosenTask.baseTask}'`,
             data: []
           }]
-          tasksCopy = [...tasksCopy, create3ProcTask(tasksCopy, chosenTask, callback)];
+          tasksCopy = [...tasksCopy, create3ProcTask(chosenTask, callback)];
         }
       } else {
         Q = Q.filter(el => el.baseTask !== chosenTaskNumber)
@@ -299,18 +267,6 @@ function MC_DZZZ(
     } while(av > 0 && Q.length > 0)
 
     t += x;
-    // console.log(t, taskTimeLength);
-    // console.log(taskTimeLength)
-    // console.log(t)
-    // if(q[chosenTask] ==)
-    // console.log(taskTimeLength)
-    // taskTimeLength.forEach((timeVal, index) => {
-    //   if(timeVal == 0) {
-    //     // console.log(tasksCopy, timeVal, index);
-    //     tasksCopy = tasksCopy.filter(task => task.baseTask !== index)
-    //     // tasksCopy = tasksCopy.filter((task) => i !== task)
-    //   }
-    // });
 
     // add step every 5 time intervals
     if(t%5 === 0 || tasksCopy.length === 0) {
