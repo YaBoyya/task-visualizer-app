@@ -47,6 +47,7 @@ export interface EdgeProps {
 
 export interface TaskProps {
   baseTask: number;
+  name: string;
   p: number;
   a: number;
   D: number;
@@ -65,6 +66,11 @@ export interface ChartDataProps {
 export interface ChartResponseProps {
   name: String;
   data: ChartDataProps[];
+}
+
+export interface TimelineChartProps {
+  onClick: Function;
+  chartSeries: ChartSeriesParams;
 }
 
 export type TaskExamplesType = {

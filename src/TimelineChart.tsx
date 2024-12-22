@@ -2,7 +2,7 @@ import ReactApexChart from "react-apexcharts";
 import { ApexOptions } from "apexcharts";
 import Button from "./components/Button";
 import { useEffect, useState } from "react";
-import { ChartSeriesParams } from "./props";
+import { TimelineChartProps } from "./props";
 
 
 const options: ApexOptions = {
@@ -45,7 +45,7 @@ const options: ApexOptions = {
   },
 }
 
-function TimelineChart({onClick, chartSeries}: {chartSeries: ChartSeriesParams;}) {
+function TimelineChart({onClick, chartSeries}: TimelineChartProps) {
   const [step, setStep] = useState<number>(chartSeries.length - 1)
 
   const handleStepChange = (it: number) => setStep(prev => {
