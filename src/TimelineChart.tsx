@@ -28,9 +28,11 @@ const options: ApexOptions = {
     }
   },
   colors: [
-    "#008FFB", "#00E396", "#FEB019", "#FF4560", "#775DD0",
-    "#3F51B5", "#546E7A", "#D4526E", "#8D5B4C", "#F86624",
-    "#D7263D", "#1B998B", "#2E294E", "#F46036", "#E2C044"
+    "#1a2b3c", "#e3f4a5", "#ff5733", "#2ecc71", "#3498db",
+    "#9b59b6", "#34495e", "#16a085", "#f39c12", "#e74c3c",
+    "#7f8c8d", "#d35400", "#27ae60", "#2980b9", "#8e44ad",
+    "#2c3e50", "#f1c40f", "#c0392b", "#bdc3c7", "#1abc9c",
+    "#ecf0f1", "#95a5a6", "#223344", "#556677", "#8899aa"
   ],
   fill: {
     type: 'solid'
@@ -43,7 +45,7 @@ const options: ApexOptions = {
   },
 }
 
-function TimelineChart({chartSeries}: {chartSeries: ChartSeriesParams;}) {
+function TimelineChart({onClick, chartSeries}: {chartSeries: ChartSeriesParams;}) {
   const [step, setStep] = useState<number>(chartSeries.length - 1)
 
   const handleStepChange = (it: number) => setStep(prev => {
@@ -71,6 +73,9 @@ function TimelineChart({chartSeries}: {chartSeries: ChartSeriesParams;}) {
               Previous
             </span>
           </div>
+        </Button>
+        <Button onClick={() => onClick()}>
+          Regenerate
         </Button>
         <Button onClick={() => handleStepChange(1)}>
           <div className="inline-flex align-middle">

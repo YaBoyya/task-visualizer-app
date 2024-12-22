@@ -60,7 +60,6 @@ function App() {
   }
 
   const onSubmitClick = () => {
-    // TODO invoke MC_DZZZ algorithm
     setIsSidebarOpen(false);
     setChartSeries(MC_DZZZ(graph, specification, taskCount, maxProcessors))
   }
@@ -149,7 +148,7 @@ function App() {
       </Sidebar>
 
       <div className={`z-0 max-w-[75%] h-screen p-2 mx-auto transition-filter ease-in-out ${isSidebarOpen ? "blur-sm pointer-events-none" : ""}`}>
-        <TimelineChart chartSeries={chartSeries} />
+        <TimelineChart onClick={onSubmitClick} chartSeries={chartSeries} />
         {maxProcessors ? <NOCImage num={maxProcessors}/> : null}
       </div>
     </BackgrounContainer>
