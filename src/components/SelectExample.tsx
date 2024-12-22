@@ -3,7 +3,7 @@ import { SelectProps } from "../props";
 
 function SelectExample({value, setValue}: SelectProps) {
   return(
-    <div className="flex flex-row content-center place-content-between max-w-[475px] py-2">
+    <div className="flex flex-row content-center place-content-between max-w-[450px] py-2">
       <label className="text-xl p-2">Example inputs:</label>
       <select
         className="w-[200px] bg-white py-1 px-2 rounded-lg font-normal"
