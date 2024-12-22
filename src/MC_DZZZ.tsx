@@ -115,12 +115,11 @@ function addTaskToChart(
       return false;
     });
   }
-
   return chartResponse.map((el: ChartResponseProps) => {
-    if (!(el.name === `Task${task.baseTask}` || (el.name === `Task${task.baseTask}'` && task.additionalTask))) {
+    if (el.name !== task.name) {
       return el;
     }
-    console.log(el.data)
+
     let newData = structuredClone(el.data);
     for (let i = processorCount - (availableProcessors + task.a); i < processorCount - availableProcessors; i++) {
       if(!isProcessorInstanceInData(newData, i)) {
@@ -133,10 +132,10 @@ function addTaskToChart(
       }
 
       for(let dataIndex = 0; dataIndex < el.data.length; dataIndex++) {
-        if (el.data[dataIndex].x !== `P${i}`) continue;
+        if (newData[dataIndex].x !== `P${i}`) continue;
 
         // jeżeli nie doszło do przerwania to popraw końcowy czas
-        if (el.data[dataIndex].y[1] === timestamp) {
+        if (newData[dataIndex].y[1] === timestamp) {
           newData[dataIndex].y[1] += 1;
         }
 
@@ -156,11 +155,13 @@ function addTaskToChart(
 }
 
 function create3ProcTask(chosenTask: TaskProps, solveNewTaskPriority: Function) {
+  const clone = structuredClone(chosenTask);
   return {
-    ...chosenTask,
-    taskPriority: solveNewTaskPriority(chosenTask.baseTask, true),
+    ...clone,
+    name: `Task${clone.baseTask}'`,
+    taskPriority: solveNewTaskPriority(clone.baseTask, true),
     additionalTask: true,
-    q: chosenTask.p,
+    q: clone.p,
     a: 3
   };
 }
@@ -190,8 +191,6 @@ function MC_DZZZ(
     taskPriority[i] = solveTaskPriority(i, maxVerticesToTask, taskSpecification, edges, taskPriority);
   }
 
-  console.log(`Priorytet zadania przed korektą dla zadań zależnych(w): ${taskPriority}`)
-
   if (edges !== null) {
     for (let i = 0; i < taskCount; i++) {
       taskPriority[i] = taskPriority[i] + criticalTaskTimes[i];
@@ -207,6 +206,7 @@ function MC_DZZZ(
 
   let tasksCopy: TaskProps[] = Object.keys(taskSpecification).map((el: any, i: number) => ({
     baseTask: parseInt(el),
+    name: `Task${el}`,
     p: taskSpecification[el][0],
     a: taskSpecification[el][1],
     D: taskSpecification[el][2],
