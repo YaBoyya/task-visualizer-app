@@ -12,7 +12,7 @@ function InputChance({value, setValue}: InputProps) {
         className="w-[200px] py-1 px-2 rounded-lg font-normal"
         type="number"
         step="0.01"
-        defaultValue={value}
+        value={value}
         onChange={e => setValue(checkChance(parseInt(e.target.value)))}
       />
     </div>

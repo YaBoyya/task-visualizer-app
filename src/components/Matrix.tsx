@@ -18,13 +18,13 @@ function Matrix({matrix, setMatrix}: MatrixProps) {
       {matrix.map((row, indexRow) => {
         return(
           <div key={indexRow} className="flex flex-row flex-nowrap place-content-center font-normal">
-            {row.map((_, indexColumn) => {
+            {row.map((val, indexColumn) => {
               return(
                 <input
                   className="max-w-10 m-1 rounded-md text-center"
                   key={indexRow + " " + indexColumn}
                   type="text"
-                  defaultValue={0}
+                  value={val}
                   name={indexRow + "," + indexColumn}
                   onChange={(e) => handleCellChange(e, indexRow, indexColumn)}
                 />

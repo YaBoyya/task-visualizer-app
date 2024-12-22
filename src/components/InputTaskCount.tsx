@@ -20,7 +20,7 @@ function InputTaskCount({value, setValue}: InputProps){
       <input
         className="w-[200px] py-1 px-2 rounded-lg font-normal"
         type="number"
-        defaultValue={value}
+        value={value}
         onChange={e => handleTaskCountChange(parseInt(e.target.value))}
       />
     </div>
