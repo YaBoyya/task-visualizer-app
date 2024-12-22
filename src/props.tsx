@@ -26,6 +26,11 @@ export interface InputProps {
   setValue: React.Dispatch<React.SetStateAction<number>>;
 }
 
+export interface SelectProps {
+  value: string
+  setValue: React.Dispatch<React.SetStateAction<string>>;
+}
+
 export interface MatrixRenderProps {
   matrix: number[][];
 }
@@ -60,6 +65,15 @@ export interface ChartDataProps {
 export interface ChartResponseProps {
   name: String;
   data: ChartDataProps[];
+}
+
+export type TaskExamplesType = {
+  [key: string]: {
+    taskGraph: number[][];
+    taskSpecification: number[][];
+    taskCount: number;
+    processorCount: number;
+  }
 }
 
 export type ChartSeriesParams = { name: string; data: { x: string; y: number[]; }[]; }[][];
