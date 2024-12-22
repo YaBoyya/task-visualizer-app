@@ -1,4 +1,3 @@
-import MatrixRender from "../MatrixRender";
 import { MatrixProps } from "../props";
 
 
@@ -16,7 +15,6 @@ function Matrix({matrix, setMatrix}: MatrixProps) {
 
   return(
     <div className="flex flex-col ">
-      {/* TODO maybe make better separation between cells */}
       {matrix.map((row, indexRow) => {
         return(
           <div key={indexRow} className="flex flex-row flex-nowrap place-content-center font-normal">
@@ -26,7 +24,6 @@ function Matrix({matrix, setMatrix}: MatrixProps) {
                   className="max-w-10 m-1 rounded-md text-center"
                   key={indexRow + " " + indexColumn}
                   type="text"
-                  // TODO Make it placeholder?
                   defaultValue={0}
                   name={indexRow + "," + indexColumn}
                   onChange={(e) => handleCellChange(e, indexRow, indexColumn)}

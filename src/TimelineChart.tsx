@@ -62,8 +62,26 @@ function TimelineChart({chartSeries}: {chartSeries: ChartSeriesParams;}) {
   return(
     <>
       <div className="flex place-content-between">
-        <Button onClick={() => handleStepChange(-1)}>{"<- prev step"}</Button>
-        <Button onClick={() => handleStepChange(1)}>{"next step ->"}</Button>          
+        <Button onClick={() => handleStepChange(-1)}>
+          <div className="inline-flex align-middle">
+            <svg viewBox="0 0 1024 1024" height="24" width="16" fill="#DDD" className="rotate-90">
+              <path d="M903.232 256l56.768 50.432L512 768 64 306.432 120.768 256 512 659.072z" fill="#000000"></path>
+            </svg>
+            <span>
+              Previous
+            </span>
+          </div>
+        </Button>
+        <Button onClick={() => handleStepChange(1)}>
+          <div className="inline-flex align-middle">
+            <span>
+              Next
+            </span>
+            <svg viewBox="0 0 1024 1024" height="24" width="16" fill="#DDD" className="-rotate-90">
+              <path d="M903.232 256l56.768 50.432L512 768 64 306.432 120.768 256 512 659.072z" fill="#000000"></path>
+            </svg>
+          </div>
+        </Button>          
       </div>
       <ReactApexChart options={options} series={chartSeries[step]} type="rangeBar" height={350} />  
     </>

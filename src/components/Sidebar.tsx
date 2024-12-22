@@ -24,7 +24,7 @@ function Sidebar({isSidebarOpen, setIsSidebarOpen, onSubmitClick, children}: Sid
           <div className="flex flex-1 items-center">
             <h1 className="flex-grow text-3xl p-2">Visualizer Configuration</h1>
               <Button onClick={onSubmitClick}>
-                Submit {"->"}
+                Submit
               </Button>
           </div>
           {children}            
