@@ -199,8 +199,8 @@ function MC_DZZZ(
 
   for (let i = 0; i < taskCount; i++){
     if (criticalTaskTimes[i] > taskSpecification[i][2]) {
-      // TODO customize the event
-      throw Error(`Uszeregowanie nie istnieje.${i}, ${criticalTaskTimes[i]}, ${taskSpecification[i][2]}`);
+      console.error(`Zadanie ${i}: krytyczny czas zadanie jest większy od jego ograniczenia czasowego(${criticalTaskTimes[i]} > ${taskSpecification[i][2]})`);
+      throw Error('Uszeregowanie nie istnieje.');
     }
   }
 

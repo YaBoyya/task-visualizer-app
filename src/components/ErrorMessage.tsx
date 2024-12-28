@@ -9,7 +9,7 @@ function ErrorMessage({msg, setMessage}: ErrorMessageProps) {
     const timeout = setTimeout(() => {
       setMessage("");
       setIsVisible(false);
-    }, 10000);
+    }, 5000);
     
     return () => {
       clearTimeout(timeout);
