@@ -11,15 +11,18 @@ import { ChartSeriesParams } from "./props";
 import SelectExample from "./components/SelectExample";
 import { taskExamples } from "./examples";
 import NumberInput from "./components/NumberInput";
+import ErrorMessage from "./components/ErrorMessage";
 
 
 function App() {
   const [taskCount, setTaskCount] = useState<number>(5);
   const [isSidebarOpen, setIsSidebarOpen] = useState<Boolean>(true);
-  const [chance, setChance] = useState<number>(0.9);
+  // const [chance, setChance] = useState<number>(0.9);
+  const [errorMessage, setErrorMessage] = useState<string>("");
   const [maxProcessors, setMaxProcessors] = useState<number>(3);
   const [chartSeries, setChartSeries] = useState<ChartSeriesParams>(defaultSeries);
   const [example, setExample] = useState<string>("");
+
   const [graph, setGraph] = useState(
     Array.from(
       {length: taskCount},
@@ -60,19 +63,23 @@ function App() {
   }
 
   const onSubmitClick = () => {
-    setIsSidebarOpen(false);
-    setChartSeries(MC_DZZZ(graph, specification, taskCount, maxProcessors))
+    try {
+      setChartSeries(MC_DZZZ(graph, specification, taskCount, maxProcessors))
+      setIsSidebarOpen(false);
+    } catch (error: any) {
+      setErrorMessage(error.message);
+    }
   }
 
-  const checkChance = (val: string) => {
-    let v = parseFloat(val);
-    if (v > 1){
-      v = 1;
-    } else if (v < 0) {
-      v = 0;
-    }
-    setChance(v);
-  }
+  // const checkChance = (val: string) => {
+  //   let v = parseFloat(val);
+  //   if (v > 1){
+  //     v = 1;
+  //   } else if (v < 0) {
+  //     v = 0;
+  //   }
+  //   setChance(v);
+  // }
 
   const checkNumber = (v: string, bottomLimit: number, upperLimit: number, setValue: React.Dispatch<React.SetStateAction<number>>) => {
     let num = parseInt(v);
@@ -103,47 +110,46 @@ function App() {
     <BackgrounContainer>
       {/* <Navbar /> */}
       <Sidebar isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} onSubmitClick={onSubmitClick}>
-        <div className='container'>
-          <SelectExample 
-            value={example}
-            setValue={setExample}
-          />
-          <NumberInput 
-            label="Task change chance:"
-            value={chance}
-            callback={checkChance}
-            step={0.01}
-          />
-          <NumberInput 
-            label="Task count:"
-            value={taskCount}
-            callback={(v: string) => checkNumber(v, 2, 15, setTaskCount)}
-          />
-          <NumberInput 
-            label="Processor count:"
-            value={maxProcessors}
-            callback={(v: string) => checkNumber(v, 3, 5, setMaxProcessors)}
-          />
-          <div className="flex w-full h-full place-content-between text-center">
-            <div className="flex-grow">
-              <MatrixContainer
-                label={"Task Graph"}
-              >
-                <Matrix 
-                  matrix={graph}
-                  setMatrix={setGraph}
-                />
-              </MatrixContainer>
-            </div>
+        {errorMessage ? <ErrorMessage msg={errorMessage} setMessage={setErrorMessage}/> : null}
+        <SelectExample 
+          value={example}
+          setValue={setExample}
+        />
+        {/* <NumberInput 
+          label="Task change chance:"
+          value={chance}
+          callback={checkChance}
+          step={0.01}
+        /> */}
+        <NumberInput 
+          label="Task count:"
+          value={taskCount}
+          callback={(v: string) => checkNumber(v, 2, 15, setTaskCount)}
+        />
+        <NumberInput 
+          label="Processor count:"
+          value={maxProcessors}
+          callback={(v: string) => checkNumber(v, 3, 5, setMaxProcessors)}
+        />
+        <div className="flex w-full h-full place-content-between text-center">
+          <div className="flex-grow">
             <MatrixContainer
-              label={"Task Specification"}
+              label={"Task Graph"}
             >
-              <Matrix
-                matrix={specification}
-                setMatrix={setSpecification}
+              <Matrix 
+                matrix={graph}
+                setMatrix={setGraph}
               />
             </MatrixContainer>
           </div>
+          <MatrixContainer
+            label={"Task Specification"}
+          >
+            <Matrix
+              matrix={specification}
+              setMatrix={setSpecification}
+            />
+          </MatrixContainer>
         </div>
       </Sidebar>
 

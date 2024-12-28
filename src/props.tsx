@@ -17,18 +17,23 @@ export interface MatrixContainerProps {
 export interface SidebarProps {
   isSidebarOpen: Boolean;
   setIsSidebarOpen: React.Dispatch<React.SetStateAction<Boolean>>;
-  onSubmitClick: () => void,
+  onSubmitClick: () => void;
   children: React.ReactNode;
 }
 
 export interface InputProps {
-  value: number
+  value: number;
   setValue: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export interface SelectProps {
   value: string
   setValue: React.Dispatch<React.SetStateAction<string>>;
+}
+
+export interface ErrorMessageProps {
+  msg: string;
+  setMessage: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export interface MatrixRenderProps {
