@@ -12,9 +12,11 @@ import SelectExample from "./components/SelectExample";
 import { taskExamples } from "./examples";
 import NumberInput from "./components/NumberInput";
 import ErrorMessage from "./components/ErrorMessage";
+import { updateMatrix } from "./utils";
 
 
 function App() {
+  // TODO useStateRememberInitial for easier resetting to initial state?
   const [taskCount, setTaskCount] = useState<number>(5);
   const [isSidebarOpen, setIsSidebarOpen] = useState<Boolean>(true);
   // const [chance, setChance] = useState<number>(0.9);
@@ -35,32 +37,6 @@ function App() {
       () => Array(3).fill(0)
     )
   );
-
-  const updateMatrixSize = () => {
-    const arr = Array.from({length: taskCount}, () => Array(taskCount).fill(0))
-    arr.forEach((row, i) => {
-      row.forEach((_, j) => {
-        if (i in graph && j in graph[i]) {
-          arr[i][j] = graph[i][j];
-        }
-      })
-    }) 
-
-    setGraph(arr);
-  }
-
-  const updateSpecificatonSize = () => {
-    const arr = Array.from({length: taskCount}, () => Array(3).fill(0))
-    arr.forEach((row, i) => {
-      row.forEach((_, j) => {
-        if (i in specification && j in specification[i]) {
-          arr[i][j] = specification[i][j];
-        }
-      })
-    }) 
-
-    setSpecification(arr);
-  }
 
   const onSubmitClick = () => {
     try {
@@ -102,8 +78,8 @@ function App() {
 
   useEffect(() => {
     // Copies old values to new array after changing dimensions
-    updateMatrixSize();
-    updateSpecificatonSize();
+    updateMatrix(graph, setGraph, taskCount, taskCount);
+    updateMatrix(specification, setSpecification, 3, taskCount)
   }, [taskCount])
 
   return (

@@ -69,19 +69,30 @@ function solveTaskPriority(taskIndex: number, maxVerticesToTask: number[], taskS
   return taskPriority[Math.min(...allMaxVertParents)] + basePriority;
 }
 
-function solveCriticalTaskTimes(startTask: number, taskGraph: number[][], taskSpecification: number[][]) {
+function solveCriticalTaskTimes(taskIndex: number, criticalTaskTimes: number[], taskSpecification: number[][], edges: EdgeProps[]) {
+  // return taskSpecification[taskIndex][2] - taskSpecification[taskIndex][0]; 
   // first task value
-  let criticalTaskTime = taskSpecification[startTask][0];
-  let vals: number[] = [];
+  // TODO look at this
+  const baseCriticalTime = taskSpecification[taskIndex][0]; 
+  const parents = getParents(taskIndex, edges)
+  
+  // jeżeli nie ma rodziców to zwróć czas wykonania zadania
+  if (!parents.length) {
+    return baseCriticalTime;
+  }
+
+  const parentsCriticalTimes = parents.map(i => criticalTaskTimes[i])
+  return baseCriticalTime + Math.max(...parentsCriticalTimes);
+
   // check all possible vertices for starting node  
-  taskGraph[startTask].forEach((el, next) => {
-    if (el === 1) {
-      // if child exists adds its sum of current node and the child criticalTaskTime to the list
-      vals = [...vals, criticalTaskTime + solveCriticalTaskTimes(next, taskGraph, taskSpecification)];
-    }
-  });
-  // returns max from all the values and initial criticalTaskTime
-  return Math.max(...vals, criticalTaskTime);
+  // taskGraph[startTask].forEach((el, next) => {
+  //   if (el === 1) {
+  //     // if child exists adds its sum of current node and the child criticalTaskTime to the list
+  //     vals = [...vals, criticalTaskTime + solveCriticalTaskTimes(next, taskGraph, taskSpecification)];
+  //   }
+  // });
+  // // returns max from all the values and initial criticalTaskTime
+  // return Math.max(...vals, criticalTaskTime);
 }
 
 function solveMaxVerticesToTask(taskIndex: number, edges: EdgeProps[], maxVerticesToTask: number[]) {
@@ -186,11 +197,11 @@ function MC_DZZZ(
   const maxVerticesToTask = Array(taskCount).fill(0); // h_i
 
   for (let i = 0; i < taskCount; i++) {
-    criticalTaskTimes[i] = solveCriticalTaskTimes(i, tasksGraph, taskSpecification);
+    criticalTaskTimes[i] = solveCriticalTaskTimes(i, criticalTaskTimes, taskSpecification, edges);
     maxVerticesToTask[i] = solveMaxVerticesToTask(i, edges, maxVerticesToTask);
     taskPriority[i] = solveTaskPriority(i, maxVerticesToTask, taskSpecification, edges, taskPriority);
   }
-
+  console.log(criticalTaskTimes)
   if (edges !== null) {
     for (let i = 0; i < taskCount; i++) {
       taskPriority[i] = taskPriority[i] + criticalTaskTimes[i];
@@ -199,8 +210,8 @@ function MC_DZZZ(
 
   for (let i = 0; i < taskCount; i++){
     if (criticalTaskTimes[i] > taskSpecification[i][2]) {
-      // TODO customize the event
-      throw Error(`Uszeregowanie nie istnieje.${i}, ${criticalTaskTimes[i]}, ${taskSpecification[i][2]}`);
+      console.error(`Zadanie ${i}: krytyczny czas zadanie jest większy od jego ograniczenia czasowego(${criticalTaskTimes[i]} > ${taskSpecification[i][2]})`);
+      throw Error('Uszeregowanie nie istnieje.');
     }
   }
 
