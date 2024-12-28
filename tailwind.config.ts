@@ -1,3 +1,4 @@
+import { error } from 'console';
 import type { Config } from 'tailwindcss';
 
 export default {
@@ -16,7 +17,10 @@ export default {
         tertiary: "#F7A072",
         background: "#F9F7F3",
         backgroundSecondary: "#DDD",
-        accent: "#EDDEA4"
+        accent: "#EDDEA4",
+        'error-text': '#F21616',
+        'error-border': '#CB0000',
+        'error-bg': '#FCBFBF',
       }
     },
   },

@@ -18,7 +18,7 @@ function ErrorMessage({msg, setMessage}: ErrorMessageProps) {
 
   return (
     <div className={`box-border w-full flex place-content-center transition-all ease-in-out delay-150 ${isVisible ? "h-fit" : "h-0 hidden"}`}>
-      <span className="w-[40%] p-2 m-2 border-2 border-[#CB0000] bg-[#FCBFBF] text-[#F21616] rounded-lg">{isVisible && msg}</span>
+      <span className="text-error-text bg-error-bg w-[40%] p-2 m-2 border-2 border-error-border rounded-lg">{isVisible && msg}</span>
     </div>
   )
 }
