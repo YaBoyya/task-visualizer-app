@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import Matrix from './components/Matrix'
+import MatrixInput from './components/MatrixInput'
 import MC_DZZZ from './MC_DZZZ'
-import TimelineChart from "./TimelineChart";
+import TimelineChart from "./components/TimelineChart";
 import BackgrounContainer from "./components/BackgroundContainer";
 import Sidebar from "./components/Sidebar";
 import MatrixContainer from "./components/MatrixContainer";
@@ -19,7 +19,6 @@ function App() {
   // TODO useStateRememberInitial for easier resetting to initial state?
   const [taskCount, setTaskCount] = useState<number>(5);
   const [isSidebarOpen, setIsSidebarOpen] = useState<Boolean>(true);
-  // const [chance, setChance] = useState<number>(0.9);
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [maxProcessors, setMaxProcessors] = useState<number>(3);
   const [chartSeries, setChartSeries] = useState<ChartSeriesParams>(defaultSeries);
@@ -47,17 +46,12 @@ function App() {
     }
   }
 
-  // const checkChance = (val: string) => {
-  //   let v = parseFloat(val);
-  //   if (v > 1){
-  //     v = 1;
-  //   } else if (v < 0) {
-  //     v = 0;
-  //   }
-  //   setChance(v);
-  // }
-
-  const checkNumber = (v: string, bottomLimit: number, upperLimit: number, setValue: React.Dispatch<React.SetStateAction<number>>) => {
+  const checkNumber = (
+    v: string,
+    bottomLimit: number,
+    upperLimit: number,
+    setValue: React.Dispatch<React.SetStateAction<number>>
+  ) => {
     let num = parseInt(v);
     if (isNaN(num) || num < bottomLimit) {
       num = bottomLimit;
@@ -84,19 +78,12 @@ function App() {
 
   return (
     <BackgrounContainer>
-      {/* <Navbar /> */}
       <Sidebar isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} onSubmitClick={onSubmitClick}>
         {errorMessage ? <ErrorMessage msg={errorMessage} setMessage={setErrorMessage}/> : null}
         <SelectExample 
           value={example}
           setValue={setExample}
         />
-        {/* <NumberInput 
-          label="Task change chance:"
-          value={chance}
-          callback={checkChance}
-          step={0.01}
-        /> */}
         <NumberInput 
           label="Task count:"
           value={taskCount}
@@ -112,7 +99,7 @@ function App() {
             <MatrixContainer
               label={"Task Graph"}
             >
-              <Matrix 
+              <MatrixInput 
                 matrix={graph}
                 setMatrix={setGraph}
               />
@@ -121,7 +108,7 @@ function App() {
           <MatrixContainer
             label={"Task Specification"}
           >
-            <Matrix
+            <MatrixInput
               matrix={specification}
               setMatrix={setSpecification}
             />

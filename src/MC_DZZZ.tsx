@@ -1,5 +1,5 @@
 import { taskExamples } from "./examples";
-import { ChartDataProps, ChartResponseProps, ChartSeriesParams, EdgeProps, TaskProps } from "./props";
+import { ChartDataProps, ChartResponseProps, EdgeProps, TaskProps } from "./props";
 
 function solveEdges(taskGraph: number[][]) {
   // returns list of edges based on task graph
@@ -71,9 +71,6 @@ function solveTaskPriority(taskIndex: number, maxVerticesToTask: number[], taskS
 }
 
 function solveCriticalTaskTimes(taskIndex: number, criticalTaskTimes: number[], taskSpecification: number[][], edges: EdgeProps[]) {
-  // return taskSpecification[taskIndex][2] - taskSpecification[taskIndex][0]; 
-  // first task value
-  // TODO look at this
   const baseCriticalTime = taskSpecification[taskIndex][0]; 
   const parents = getParents(taskIndex, edges)
   
@@ -84,16 +81,6 @@ function solveCriticalTaskTimes(taskIndex: number, criticalTaskTimes: number[], 
 
   const parentsCriticalTimes = parents.map(i => criticalTaskTimes[i])
   return baseCriticalTime + Math.max(...parentsCriticalTimes);
-
-  // check all possible vertices for starting node  
-  // taskGraph[startTask].forEach((el, next) => {
-  //   if (el === 1) {
-  //     // if child exists adds its sum of current node and the child criticalTaskTime to the list
-  //     vals = [...vals, criticalTaskTime + solveCriticalTaskTimes(next, taskGraph, taskSpecification)];
-  //   }
-  // });
-  // // returns max from all the values and initial criticalTaskTime
-  // return Math.max(...vals, criticalTaskTime);
 }
 
 function solveMaxVerticesToTask(taskIndex: number, edges: EdgeProps[], maxVerticesToTask: number[]) {
@@ -108,17 +95,14 @@ function solveMaxVerticesToTask(taskIndex: number, edges: EdgeProps[], maxVertic
   const maxVertParent = parents.reduce((parentMax, x) => maxVerticesToTask[x] > maxVerticesToTask[parentMax] ? x : parentMax, parents[0]);
   // increments parents h for the current node
   return maxVerticesToTask[maxVertParent] + 1;
-
-  // old and most likely wrong
-  // return taskGraph.reduce((partialSum, row) => partialSum + row[taskIndex], 0);
 }
 
 function addTaskToChart(
-  chartResponse: any,
+  chartResponse: ChartResponseProps[],
   availableProcessors: number,
   processorCount: number,
   task: TaskProps,
-  timestamp: number): ChartSeriesParams {
+  timestamp: number): ChartResponseProps[] {
   const isProcessorInstanceInData = (data: ChartDataProps[], i: number) => {
     if (!data.length) return false;
 

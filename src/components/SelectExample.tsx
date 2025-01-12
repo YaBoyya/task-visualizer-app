@@ -1,3 +1,4 @@
+import { ChangeEvent } from "react";
 import { taskExamples } from "../examples";
 import { SelectProps } from "../props";
 
@@ -7,8 +8,7 @@ function SelectExample({value, setValue}: SelectProps) {
       <label className="text-xl p-2">Example inputs:</label>
       <select
         className="w-[200px] bg-white py-1 px-2 rounded-lg font-normal"
-        // TODO
-        onChange={(event: any) => setValue(event.target.value)}
+        onChange={(event: ChangeEvent<HTMLSelectElement>) => setValue(event.target.value)}
         value={value}
       >
         <option value="">

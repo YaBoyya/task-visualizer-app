@@ -1,13 +1,13 @@
+import { ChangeEvent } from "react";
 import { MatrixProps } from "../props";
 
 
-function Matrix({matrix, setMatrix}: MatrixProps) {
-  const handleCellChange = (event: any, row: number, col: number) => {
+function MatrixInput({matrix, setMatrix}: MatrixProps) {
+  const handleCellChange = (event: ChangeEvent<HTMLInputElement>, row: number, col: number) => {
     let val = event.target.value;
 
     setMatrix((prev) => {
       const matrix = [...prev];
-      // TODO add an error for invalid values?
       matrix[row][col] = !isNaN(parseFloat(val)) && parseFloat(val) > 0 ? parseFloat(val) : 0;
       return matrix;
     })
@@ -37,4 +37,4 @@ function Matrix({matrix, setMatrix}: MatrixProps) {
   );
 }
 
-export default Matrix;
+export default MatrixInput;
