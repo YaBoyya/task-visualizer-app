@@ -1,4 +1,5 @@
-import { ChartDataProps, ChartResponseProps, ChartSeriesParams, EdgeProps, TaskProps } from "./props";
+import { taskExamples } from "./examples";
+import { ChartDataProps, ChartResponseProps, EdgeProps, TaskProps } from "./props";
 
 function solveEdges(taskGraph: number[][]) {
   // returns list of edges based on task graph
@@ -69,19 +70,17 @@ function solveTaskPriority(taskIndex: number, maxVerticesToTask: number[], taskS
   return taskPriority[Math.min(...allMaxVertParents)] + basePriority;
 }
 
-function solveCriticalTaskTimes(startTask: number, taskGraph: number[][], taskSpecification: number[][]) {
-  // first task value
-  let criticalTaskTime = taskSpecification[startTask][0];
-  let vals: number[] = [];
-  // check all possible vertices for starting node  
-  taskGraph[startTask].forEach((el, next) => {
-    if (el === 1) {
-      // if child exists adds its sum of current node and the child criticalTaskTime to the list
-      vals = [...vals, criticalTaskTime + solveCriticalTaskTimes(next, taskGraph, taskSpecification)];
-    }
-  });
-  // returns max from all the values and initial criticalTaskTime
-  return Math.max(...vals, criticalTaskTime);
+function solveCriticalTaskTimes(taskIndex: number, criticalTaskTimes: number[], taskSpecification: number[][], edges: EdgeProps[]) {
+  const baseCriticalTime = taskSpecification[taskIndex][0]; 
+  const parents = getParents(taskIndex, edges)
+  
+  // jeżeli nie ma rodziców to zwróć czas wykonania zadania
+  if (!parents.length) {
+    return baseCriticalTime;
+  }
+
+  const parentsCriticalTimes = parents.map(i => criticalTaskTimes[i])
+  return baseCriticalTime + Math.max(...parentsCriticalTimes);
 }
 
 function solveMaxVerticesToTask(taskIndex: number, edges: EdgeProps[], maxVerticesToTask: number[]) {
@@ -96,17 +95,14 @@ function solveMaxVerticesToTask(taskIndex: number, edges: EdgeProps[], maxVertic
   const maxVertParent = parents.reduce((parentMax, x) => maxVerticesToTask[x] > maxVerticesToTask[parentMax] ? x : parentMax, parents[0]);
   // increments parents h for the current node
   return maxVerticesToTask[maxVertParent] + 1;
-
-  // old and most likely wrong
-  // return taskGraph.reduce((partialSum, row) => partialSum + row[taskIndex], 0);
 }
 
 function addTaskToChart(
-  chartResponse: any,
+  chartResponse: ChartResponseProps[],
   availableProcessors: number,
   processorCount: number,
-  task: any,
-  timestamp: number): ChartSeriesParams {
+  task: TaskProps,
+  timestamp: number): ChartResponseProps[] {
   const isProcessorInstanceInData = (data: ChartDataProps[], i: number) => {
     if (!data.length) return false;
 
@@ -130,23 +126,26 @@ function addTaskToChart(
         el.data = newData;
         continue;
       }
-
-      for(let dataIndex = 0; dataIndex < el.data.length; dataIndex++) {
-        if (newData[dataIndex].x !== `P${i}`) continue;
+      let filteredData = newData.filter(el => el.x === `P${i}`)
+      let unfilteredData = newData.filter(el => el.x !== `P${i}`)
+      for(let dataIndex = 0; dataIndex < filteredData.length; dataIndex++) {
+        if (filteredData[dataIndex].x !== `P${i}`) continue;
 
         // jeżeli nie doszło do przerwania to popraw końcowy czas
-        if (newData[dataIndex].y[1] === timestamp) {
-          newData[dataIndex].y[1] += 1;
+        if (filteredData[dataIndex].y[1] === timestamp) {
+          filteredData[dataIndex].y[1] += 1;
+          continue;
         }
 
         // sprawdź czy ostatni przedział jest mniejszy niż timestamp, aby nie powielać tworzenia nowych instancji Pi
-        if(newData[newData.length-1].y[1] < timestamp){
-          newData = [...newData, {
+        if(filteredData[filteredData.length-1].y[1] < timestamp ){
+          filteredData = [...filteredData, {
             x: `P${i}`,
             y: [timestamp, timestamp+1]
           }]
         }
       }
+      newData = [...filteredData, ...unfilteredData];
     }
 
     el.data = newData;
@@ -176,9 +175,10 @@ function MC_DZZZ(
     name: `Task${el}`,
     data: []
   }))
-  let chartSteps = [chartResponse];
+  let chartSteps = [structuredClone(chartResponse)];
   // p: 0, a: 1, D: 2
   let t = 0;
+  let tcheck = -1;
 
   const edges = solveEdges(tasksGraph);               // E
   const taskPriority = Array(taskCount).fill(0);      // w_i
@@ -186,7 +186,7 @@ function MC_DZZZ(
   const maxVerticesToTask = Array(taskCount).fill(0); // h_i
 
   for (let i = 0; i < taskCount; i++) {
-    criticalTaskTimes[i] = solveCriticalTaskTimes(i, tasksGraph, taskSpecification);
+    criticalTaskTimes[i] = solveCriticalTaskTimes(i, criticalTaskTimes, taskSpecification, edges);
     maxVerticesToTask[i] = solveMaxVerticesToTask(i, edges, maxVerticesToTask);
     taskPriority[i] = solveTaskPriority(i, maxVerticesToTask, taskSpecification, edges, taskPriority);
   }
@@ -204,8 +204,8 @@ function MC_DZZZ(
     }
   }
 
-  let tasksCopy: TaskProps[] = Object.keys(taskSpecification).map((el: any, i: number) => ({
-    baseTask: parseInt(el),
+  let tasksCopy: TaskProps[] = Array.from({length: taskCount}, (_, i) => i).map((el: number, i: number) => ({
+    baseTask: el,
     name: `Task${el}`,
     p: taskSpecification[el][0],
     a: taskSpecification[el][1],
@@ -238,11 +238,10 @@ function MC_DZZZ(
       const W = Q.filter(task => task.taskPriority === M);  // Tasks with M priority
       const A = Math.max(...W.map((task) => task.a)); // Max processors in W
       const F = W.filter(task => task.a === A);  // Tasks with A processors
-  
       const C = Math.max(...F.map((task) => task.maxVerticesToTask)); // Max vertices to task in F
       const J = F.filter(task => task.maxVerticesToTask === C);  // Task with F vertices to them
 
-      const chosenTask = J[randRange(0, J.length)]
+      const chosenTask = J[0]
       const chosenTaskNumber = chosenTask.baseTask;
 
       x = 1;
@@ -265,7 +264,9 @@ function MC_DZZZ(
         Q = Q.filter(el => el.baseTask !== chosenTaskNumber)
       }
     } while(av > 0 && Q.length > 0)
-
+    if(tcheck !== t) {
+      tcheck = t;
+    }
     t += x;
 
     // add step every 5 time intervals
@@ -273,51 +274,16 @@ function MC_DZZZ(
       chartSteps = [...chartSteps, structuredClone(chartResponse)];
     }
   }
-  console.log(tasksCopy)
-  console.log(JSON.stringify(chartResponse))
   return chartSteps;
 }
 
 export default MC_DZZZ;
 
 if (import.meta.filename === import.meta.url.substring(7)) {
-  // inputs: 
-  const taskGraph = [
-  // 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,11,12
-    [0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0], // 0
-    [0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0], // 1
-    [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0], // 2
-    [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0], // 3
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], // 4
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], // 5
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], // 6
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // 7
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0], // 8
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], // 9
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // 10
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // 11
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // 12
-  ];
-    
-  const taskSpecification = [
-  // czas wykonania zadania, liczba żądanych procesorów, najpóźniejszy możliwy termin zakończenia zadania 
-  // pi, ai, Di
-    [30, 3, 195], // 0
-    [10, 2, 155], // 1
-    [5,  1, 30],  // 2
-    [10, 3, 80],  // 3
-    [15, 1, 105], // 4
-    [20, 1, 110], // 5
-    [25, 3, 135], // 6
-    [25, 1, 25],  // 7
-    [10, 1, 50],  // 8
-    [20, 2, 90],  // 9
-    [20, 3, 40],  // 10
-    [10, 2, 20],  // 11
-    [20, 3, 60]   // 12
-  ];
-  const n = taskGraph.length; // task count
-  const m = 5; // processor count
-
-  MC_DZZZ(taskGraph, taskSpecification, n, m);  
+  const input = taskExamples.example1;
+  MC_DZZZ(input['taskGraph'], input['taskSpecification'], input['taskCount'], input['processorCount']);
+  console.log(`task count: ${input['taskCount']}`)
+  console.log(`1 proc task count: ${input['taskSpecification'].filter(el => el[1] === 1).length}`)
+  console.log(`2 proc task count: ${input['taskSpecification'].filter(el => el[1] === 2).length}`)
+  console.log(`3 proc task count: ${input['taskSpecification'].filter(el => el[1] === 3).length}`)
 }

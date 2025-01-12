@@ -1,5 +1,4 @@
-function NOCImage({num}: any) {
-  // TODO style
+function NOCImage({num}: {num: number}) {
   return (
     <img className="mx-auto" src={`NOC${num}.svg`}></img>
   );

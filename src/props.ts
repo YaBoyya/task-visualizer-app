@@ -31,6 +31,13 @@ export interface SelectProps {
   setValue: React.Dispatch<React.SetStateAction<string>>;
 }
 
+export interface NumberInputProps {
+  label: string;
+  value: number;
+  callback: Function;
+  step?: number
+}
+
 export interface ErrorMessageProps {
   msg: string;
   setMessage: React.Dispatch<React.SetStateAction<string>>;
@@ -65,7 +72,7 @@ export interface TaskProps {
 
 export interface ChartDataProps {
   x: string;
-  y:number[];
+  y: number[];
 }
 
 export interface ChartResponseProps {

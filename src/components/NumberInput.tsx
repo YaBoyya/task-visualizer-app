@@ -1,4 +1,6 @@
-function NumberInput({label, value, callback, step=1}: any){
+import { NumberInputProps } from "../props";
+
+function NumberInput({label, value, callback, step=1}: NumberInputProps){
   return (
     <div className="flex flex-row content-center place-content-between max-w-[450px] py-2">
       <label className="text-xl p-2">{label}</label>

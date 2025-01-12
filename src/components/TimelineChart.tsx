@@ -1,8 +1,8 @@
 import ReactApexChart from "react-apexcharts";
 import { ApexOptions } from "apexcharts";
-import Button from "./components/Button";
+import Button from "./Button";
 import { useEffect, useState } from "react";
-import { TimelineChartProps } from "./props";
+import { TimelineChartProps } from "../props";
 
 
 const options: ApexOptions = {
@@ -18,6 +18,9 @@ const options: ApexOptions = {
         pan: false,
         reset: false,
       }
+    },
+    zoom: {
+      enabled: false
     }
   },
   plotOptions: {
@@ -38,7 +41,8 @@ const options: ApexOptions = {
     type: 'solid'
   },
   xaxis: {
-    type: 'category'
+    type: 'category',
+    categories: ['P4', 'P3', 'P2', 'P1', 'P0']
   },
   legend: {
     position: 'right'
